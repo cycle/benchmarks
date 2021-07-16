@@ -49,10 +49,6 @@ class CycleOrmDriver extends AbstractDriver
     public function configure(): void
     {
         $this->database = $this->orm->getFactory()->database('default');
-        $this->entityFactory = $this->container->make(EntityFactoryInterface::class, [
-            'orm' => $this->orm
-        ]);
-
         parent::configure();
     }
 
@@ -77,5 +73,12 @@ class CycleOrmDriver extends AbstractDriver
     public function setSchema(array $schema): void
     {
         $this->orm = $this->orm->withSchema(new Schema($schema));
+    }
+
+    public function createEntityFactory(): EntityFactoryInterface
+    {
+        return $this->container->make(EntityFactoryInterface::class, [
+            'orm' => $this->orm
+        ]);
     }
 }

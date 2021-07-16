@@ -14,6 +14,8 @@ abstract class AbstractDriver implements DriverInterface
 
     public function configure(): void
     {
+        $this->entityFactory = $this->createEntityFactory();
+
         $this->factory = new \Butschster\EntityFaker\Factory(
             $this->entityFactory,
             \Faker\Factory::create()

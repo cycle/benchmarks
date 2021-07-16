@@ -28,10 +28,6 @@ class EloquentDriver extends AbstractDriver
 
     public function configure(): void
     {
-        $this->entityFactory = $this->container->make(EntityFactoryInterface::class, [
-            'db' => $this->capsule->getDatabaseManager()
-        ]);
-
         parent::configure();
     }
 
@@ -45,8 +41,13 @@ class EloquentDriver extends AbstractDriver
             });
     }
 
+    public function createEntityFactory(): EntityFactoryInterface
+    {
+        return new EloquentEntityFactory($this->capsule->getDatabaseManager());
+    }
+
     public function setSchema(array $schema): void
     {
-        // TODO: Implement setSchema() method.
+
     }
 }

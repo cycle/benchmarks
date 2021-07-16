@@ -12,4 +12,5 @@ interface DriverInterface
     public function getEntityFactory(): EntityFactoryInterface;
     public function getFactory(): \Butschster\EntityFaker\Factory;
     public function setSchema(array $schema): void;
+    public function createEntityFactory(): EntityFactoryInterface;
 }
