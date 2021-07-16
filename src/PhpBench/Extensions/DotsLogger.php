@@ -36,7 +36,7 @@ class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
             $this->firstTime = false;
 
             $this->output->writeln(
-                'Namespace: ' . trim(preg_replace('!\s+!', ' ', str_replace('\\', ' ', str_replace([
+                'Project: ' . trim(preg_replace('!\s+!', ' ', str_replace('\\', ' ', str_replace([
                     'Benchmarks',
                     $benchmark->getName()
                 ], '', $benchmark->getClass()))))

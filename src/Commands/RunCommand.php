@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
 
+use DirectoryIterator;
 use PhpBench\Console\Application;
 use PhpBench\PhpBench;
 use Symfony\Component\Console\Command\Command;
@@ -17,11 +18,6 @@ class RunCommand extends Command
 {
     protected static $defaultName = 'run';
 
-    private const PROJECTS = [
-        "benchmarks/v1",
-        "benchmarks/v2",
-    ];
-
     public function __construct(string $name = null)
     {
         parent::__construct($name);
@@ -29,7 +25,13 @@ class RunCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        foreach (self::PROJECTS as $project) {
+        $projects = $input->getArgument('projects');
+
+        $output->writeln('<info>Run benchmarks to projects: '.implode(', ', $projects).'</info>');
+
+        foreach ($projects as $project) {
+            $project = 'benchmarks' . DIRECTORY_SEPARATOR . $project;
+
             $projectDir = ROOT . DIRECTORY_SEPARATOR . $project;
 
             $this->configureProject($projectDir, $output);
@@ -48,7 +50,9 @@ class RunCommand extends Command
     {
         $this->setDescription('Run benchmark');
 
-        $this->addOption('process', 'p', InputOption::VALUE_NONE, 'Use separate process to run benchmarks');
+        $this
+            ->addOption('process', 'p', InputOption::VALUE_NONE, 'Use separate process to run benchmarks')
+            ->addArgument('projects', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Projects to bench', $this->getProjects());
     }
 
     protected function configureProject(string $projectDir, OutputInterface $output): void
@@ -82,7 +86,7 @@ class RunCommand extends Command
             '--bootstrap=' . 'bootstrap.php',
             '--report=' . 'aggregate',
             '--config=' . ROOT . '/phpbench.json',
-            'tests/Benchmarks'
+            'tests'
         ]);
 
         $process->start();
@@ -106,7 +110,7 @@ class RunCommand extends Command
                     '--bootstrap' => 'bootstrap.php',
                     '--report' => 'aggregate',
                     '--config' => ROOT . '/phpbench.json',
-                    'path' => 'tests/Benchmarks'
+                    'path' => 'tests'
                 ]
             )
         );
@@ -116,5 +120,20 @@ class RunCommand extends Command
         $app->setAutoExit(false);
 
         $app->run($input, $output);
+    }
+
+    protected function getProjects(): array
+    {
+        $dirs = new DirectoryIterator(ROOT . DIRECTORY_SEPARATOR . 'benchmarks');
+        $projects = [];
+
+        foreach ($dirs as $dir) {
+            if ($dir->isDot()) {
+                continue;
+            }
+            $projects[] = $dir->getFileName();
+        }
+
+        return $projects;
     }
 }

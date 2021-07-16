@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Cycle\Benchmarks\Base;
+namespace Cycle\Benchmarks\Base\DatabaseDrivers;
 
 use Cycle\ORM\Exception\SchemaException;
 use Spiral\Database\Schema\AbstractColumn;
@@ -199,6 +199,7 @@ final class TableRenderer
 
         switch ($column->getType()) {
             case 'int':
+            case 'integer':
                 return 0;
             case 'float':
                 return 0.0;

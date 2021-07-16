@@ -3,10 +3,7 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\v1;
 
-use Butschster\EntityFaker\EntityFactoryInterface;
-use Cycle\Benchmarks\Base\BaseCycleOrmEntityFactory;
-use Cycle\ORM\ORMInterface;
-use Cycle\ORM\Transaction;
+use Cycle\Benchmarks\Base\EntityFactory\BaseCycleOrmEntityFactory;
 
 class CycleOrmEntityFactory extends BaseCycleOrmEntityFactory
 {

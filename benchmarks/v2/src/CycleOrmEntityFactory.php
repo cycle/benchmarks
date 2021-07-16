@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\v2;
 
-use Cycle\Benchmarks\Base\BaseCycleOrmEntityFactory;
+use Cycle\Benchmarks\Base\EntityFactory\BaseCycleOrmEntityFactory;
 
 class CycleOrmEntityFactory extends BaseCycleOrmEntityFactory
 {

@@ -3,54 +3,35 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Configurators;
 
-use Butschster\EntityFaker\EntityFactoryInterface;
+use Butschster\EntityFaker\Factory;
+use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
 use Cycle\Benchmarks\Base\SeedRepository;
-use Cycle\Benchmarks\Base\TableRenderer;
-use Cycle\ORM\ORMInterface;
-use Cycle\ORM\SchemaInterface;
-use Spiral\Database\Database;
 
-abstract class AbstractConfigurator
+abstract class AbstractConfigurator implements ConfiguratorInterface
 {
-    private ORMInterface $orm;
-    protected SeedRepository $seeds;
+    private SeedRepository $seeds;
+    private DriverInterface $driver;
 
-    public function __construct(ORMInterface $orm, SchemaInterface $schema)
+    public function __construct(DriverInterface $driver)
     {
-        $this->orm = $orm->withSchema($schema);
+        $this->driver = $driver;
         $this->seeds = new SeedRepository([]);
     }
 
-    abstract public function configure(): void;
-
-    abstract public function getFactory(): \Butschster\EntityFaker\Factory;
-
-    public function getOrm(): ORMInterface
+    public function configure(): void
     {
-        return $this->orm;
+        $this->driver->setSchema($this->getSchema());
+        $this->driver->configure();
     }
 
-    public function makeTable(string $table, array $columns, array $fk = [], array $pk = null, array $defaults = []): void
+    public function getFactory(): Factory
     {
-        $schema = $this->getDatabase()->table($table)->getSchema();
-
-        $renderer = new TableRenderer();
-        $renderer->renderColumns($schema, $columns, $defaults);
-
-        foreach ($fk as $column => $options) {
-            $schema->foreignKey([$column])->references($options['table'], [$options['column']]);
-        }
-
-        if (!empty($pk)) {
-            $schema->setPrimaryKeys([$pk]);
-        }
-
-        $schema->save();
+        return $this->getDriver()->getFactory();
     }
 
-    protected function getDatabase(): Database
+    public function getDriver(): DriverInterface
     {
-        return $this->orm->getFactory()->database('default');
+        return $this->driver;
     }
 
     public function getSeeds(): SeedRepository

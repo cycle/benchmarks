@@ -47,10 +47,10 @@ abstract class UserWithoutProfileBench extends Benchmark
         $entity = $entityFactory->create(UserWithoutProfile::class);
 
         foreach ($seeds as $seed) {
-            $entityFactory->beforeCreationCallbacks()[0]();
+            $this->runCallbacks($entityFactory->beforeCreationCallbacks());
             $entityFactory->hydrate($entity, $seed);
             $entityFactory->store($entity);
-            $entityFactory->afterCreationCallbacks()[0]();
+            $this->runCallbacks($entityFactory->afterCreationCallbacks());
         }
     }
 
@@ -71,14 +71,14 @@ abstract class UserWithoutProfileBench extends Benchmark
         $entityFactory = $this->getEntityFactory();
         $entity = $entityFactory->create(UserWithoutProfile::class);
 
-        $entityFactory->beforeCreationCallbacks()[0]();
+        $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
         foreach ($seeds as $seed) {
             $entityFactory->hydrate($entity, $seed);
             $entityFactory->store($entity);
         }
 
-        $entityFactory->afterCreationCallbacks()[0]();
+        $this->runCallbacks($entityFactory->afterCreationCallbacks());
     }
 
     public function userAmounts(): \Generator

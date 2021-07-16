@@ -12,7 +12,7 @@
   "autoload": {
     "psr-4": {
       "Cycle\\Benchmarks\\v1\\": "./src",
-      "Cycle\\Benchmarks\\v1\\Tests\\": "./tests"
+      "Benchmarks\\v1\\": "./tests"
     }
   },
   "require": {

@@ -4,50 +4,18 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Configurators;
 
-use Butschster\EntityFaker\Factory;
-use Cycle\Benchmarks\Base\BaseCycleOrmEntityFactory;
 use Cycle\Benchmarks\Base\Entites\UserWithoutProfile;
 use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\ORMInterface;
 use Cycle\ORM\Schema;
 use Faker\Generator;
 
 class UserWithoutProfileConfigurator extends AbstractConfigurator
 {
-    private Factory $factory;
-    private BaseCycleOrmEntityFactory $entityFactory;
-
-    public function __construct(ORMInterface $orm, string $entityFactory)
-    {
-        parent::__construct(
-            $orm,
-            new Schema(
-                [
-                    UserWithoutProfile::class => [
-                        Schema::MAPPER => Mapper::class,
-                        Schema::DATABASE => 'default',
-                        Schema::TABLE => 'user',
-                        Schema::PRIMARY_KEY => 'uuid',
-                        Schema::COLUMNS => ['id', 'username', 'email'],
-                        Schema::TYPECAST => [],
-                        Schema::SCHEMA => [],
-                        Schema::RELATIONS => []
-                    ]
-                ]
-            )
-        );
-
-        $this->entityFactory = new $entityFactory($this->getOrm());
-
-        $this->factory = new Factory(
-            $this->entityFactory,
-            \Faker\Factory::create()
-        );
-    }
-
     public function configure(): void
     {
-        $this->makeTable('user', [
+        parent::configure();
+
+        $this->getDriver()->createTable('user', [
             'id' => 'string', 'username' => 'string', 'email' => 'string'
         ]);
 
@@ -62,8 +30,23 @@ class UserWithoutProfileConfigurator extends AbstractConfigurator
         $this->seedEntityData();
     }
 
-    public function getFactory(): Factory
+    public function getSchema(): array
     {
-        return $this->factory;
+        if (!class_exists('Cycle\ORM\Schema')) {
+            return [];
+        }
+
+        return [
+            UserWithoutProfile::class => [
+                Schema::MAPPER => Mapper::class,
+                Schema::DATABASE => 'default',
+                Schema::TABLE => 'user',
+                Schema::PRIMARY_KEY => 'uuid',
+                Schema::COLUMNS => ['id', 'username', 'email'],
+                Schema::TYPECAST => [],
+                Schema::SCHEMA => [],
+                Schema::RELATIONS => []
+            ]
+        ];
     }
 }
