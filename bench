@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Symfony\Component\Console\Application;
+use Cycle\Benchmarks\Base\Commands\RunCommand;
+
+require "vendor/autoload.php";
+
+define('ROOT', __DIR__);
+
+$app = new Application('Cycle ORM benchmark tool.');
+
+$app->addCommands([
+    new RunCommand()
+]);
+
+$app->run();

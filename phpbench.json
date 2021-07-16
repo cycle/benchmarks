@@ -1,0 +1,6 @@
+{
+  "core.extensions": [
+    "Cycle\\Benchmarks\\Base\\PhpBench\\Extensions\\LoggerExtension"
+  ],
+  "runner.progress": "cycle"
+}

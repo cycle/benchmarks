@@ -1,0 +1,24 @@
+{
+  "name": "cycle/benchmarks",
+  "description": "description",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pavel Buchnev",
+      "email": "butschster@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Cycle\\Benchmarks\\Base\\": "./src"
+    }
+  },
+  "require": {
+    "phpbench/phpbench": "^1.0",
+    "butschster/entity-faker": "^0.5",
+    "fakerphp/faker": "^1.15",
+    "symfony/console": "^5.3",
+    "symfony/process": "^5.3",
+    "spiral/config": "^2.8"
+  }
+}
