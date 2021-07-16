@@ -1,5 +1,8 @@
 # Benchmark tool for CycleORM
 
 ```
-./bench run
+$ ./bench run
+
+// run benches as separate processes
+$ ./bench run -p
 ```
