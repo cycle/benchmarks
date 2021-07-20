@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Benchmarks\v1;
+namespace Benchmarks\v2;
 
 use Butschster\EntityFaker\EntityFactoryInterface;
 use Cycle\Benchmarks\Base\DatabaseDrivers\CycleOrmDriver;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
-use Cycle\Benchmarks\v1\CycleOrmEntityFactory;
-use Cycle\ORM\Mapper\Mapper;
+use Cycle\Benchmarks\v2\CycleOrmEntityFactory;
+use Cycle\ORM\Mapper\PromiseMapper;
 use Cycle\ORM\MapperInterface;
 
-class UserWithoutProfileBench extends \Cycle\Benchmarks\Base\Benchmarks\UserWithoutProfileBench
+class UserWithProfilePromiseMapperBench extends \Cycle\Benchmarks\Base\Benchmarks\UserWithProfileBench
 {
     public function setUp(array $bindings = []): void
     {
         $bindings[DriverInterface::class] = CycleOrmDriver::class;
         $bindings[EntityFactoryInterface::class] = CycleOrmEntityFactory::class;
-        $bindings[MapperInterface::class] = Mapper::class;
+        $bindings[MapperInterface::class] = PromiseMapper::class;
 
         parent::setUp($bindings);
     }

@@ -20,8 +20,6 @@ use Faker\Generator;
 
 class UserConfigurator extends AbstractConfigurator
 {
-    private ?array $schema = null;
-
     public function createTables(): void
     {
         $this->getDriver()->createTable('user', ['id' => 'integer', 'username' => 'string', 'email' => 'string']);
@@ -85,17 +83,8 @@ class UserConfigurator extends AbstractConfigurator
         return $this->getSeeds()->get(Comment::class);
     }
 
-    public function setSchema(array $schema): void
-    {
-        $this->schema = $schema;
-    }
-
     public function getSchema(): array
     {
-        if (is_array($this->schema)) {
-            return $this->schema;
-        }
-
         return [
             User::class => [
                 Schema::MAPPER => Mapper::class,

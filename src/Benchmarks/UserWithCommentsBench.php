@@ -5,6 +5,9 @@ namespace Cycle\Benchmarks\Base\Benchmarks;
 
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
+use Cycle\Benchmarks\Base\Schemas\CommentSchema;
+use Cycle\Benchmarks\Base\Schemas\UserProfileSchema;
+use Cycle\Benchmarks\Base\Schemas\UserSchema;
 use Cycle\Benchmarks\Base\Seeds\Seeds;
 
 /**
@@ -16,11 +19,11 @@ abstract class UserWithCommentsBench extends Benchmark
     public Seeds $profileSeeds;
     public Seeds $commentSeeds;
 
-    public function setUp(): void
+    public function setUp(array $bindings = []): void
     {
-        $this->getContainer()->bind(ConfiguratorInterface::class, UserConfigurator::class);
+        $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
 
-        parent::setUp();
+        parent::setUp($bindings);
 
         $this->getConfigurator()->getDriver()->insertTableRows(
             'user', ['id', 'username', 'email'],
@@ -54,7 +57,7 @@ abstract class UserWithCommentsBench extends Benchmark
      * @Subject
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
-     * @ParamProviders("commentAmounts")
+     * @ParamProviders({"commentAmounts"})
      */
     public function createUserWithComments(array $params): void
     {
@@ -116,5 +119,13 @@ abstract class UserWithCommentsBench extends Benchmark
     {
         yield 'one comment' => ['times' => 1];
         yield 'ten comments' => ['times' => 10];
+    }
+
+    public function getSchema(string $mapper): array
+    {
+        return []
+            + (new UserSchema($mapper))->withProfileRelation()->toArray()
+            + (new UserProfileSchema($mapper))->withUserRelation()->toArray()
+            + (new CommentSchema($mapper))->withUserRelation()->toArray();
     }
 }

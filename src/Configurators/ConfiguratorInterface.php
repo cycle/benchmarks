@@ -9,9 +9,8 @@ use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
 
 interface ConfiguratorInterface
 {
-    public function configure(): void;
+    public function configure(array $schema): void;
     public function getFactory(): Factory;
     public function getSeeds(): SeedRepositoryInterface;
     public function getDriver(): DriverInterface;
-    public function getSchema(): array;
 }

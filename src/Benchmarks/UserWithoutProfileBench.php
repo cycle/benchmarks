@@ -5,6 +5,7 @@ namespace Cycle\Benchmarks\Base\Benchmarks;
 
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
+use Cycle\Benchmarks\Base\Schemas\UserSchema;
 use Cycle\Benchmarks\Base\Seeds\Seeds;
 
 /**
@@ -14,11 +15,11 @@ abstract class UserWithoutProfileBench extends Benchmark
 {
     public Seeds $userSeeds;
 
-    public function setUp(): void
+    public function setUp(array $bindings = []): void
     {
-        $this->getContainer()->bind(ConfiguratorInterface::class, UserConfigurator::class);
+        $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
 
-        parent::setUp();
+        parent::setUp($bindings);
 
         $this->getConfigurator()->getDriver()->insertTableRows(
             'user', ['id', 'username', 'email'],
@@ -64,7 +65,7 @@ abstract class UserWithoutProfileBench extends Benchmark
      * @Subject
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
-     * @ParamProviders("userAmounts")
+     * @ParamProviders({"userAmounts"})
      */
     public function createUserInSingleTransaction(array $params): void
     {
@@ -88,7 +89,7 @@ abstract class UserWithoutProfileBench extends Benchmark
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
-    public function loadUser()
+    public function loadUser(): void
     {
         $this->getConfigurator()
             ->getUserRepository()
@@ -99,5 +100,10 @@ abstract class UserWithoutProfileBench extends Benchmark
     {
         yield 'five records' => ['times' => 5];
         yield 'ten records' => ['times' => 10];
+    }
+
+    public function getSchema(string $mapper): array
+    {
+        return (new UserSchema($mapper))->toArray();
     }
 }

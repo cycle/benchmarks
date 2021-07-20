@@ -15,12 +15,11 @@ abstract class AbstractConfigurator implements ConfiguratorInterface
 
     public function __construct(private DriverInterface $driver)
     {
-        $this->driver = $driver;
     }
 
-    public function configure(): void
+    public function configure(array $schema): void
     {
-        $this->driver->setSchema($this->getSchema());
+        $this->driver->setSchema($schema);
         $this->driver->configure();
 
         $this->createTables();

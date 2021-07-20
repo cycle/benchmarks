@@ -5,7 +5,10 @@ namespace Cycle\Benchmarks\Base\Benchmarks;
 
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
+use Cycle\Benchmarks\Base\Schemas\UserProfileSchema;
+use Cycle\Benchmarks\Base\Schemas\UserSchema;
 use Cycle\Benchmarks\Base\Seeds\Seeds;
+use Generator;
 
 /**
  * @method UserConfigurator getConfigurator()
@@ -15,11 +18,11 @@ abstract class UserWithProfileBench extends Benchmark
     public Seeds $userSeeds;
     public Seeds $profileSeeds;
 
-    public function setUp(): void
+    public function setUp(array $bindings = []): void
     {
-        $this->getContainer()->bind(ConfiguratorInterface::class, UserConfigurator::class);
+        $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
 
-        parent::setUp();
+        parent::setUp($bindings);
 
         $this->getConfigurator()->getDriver()->insertTableRows(
             'user', ['id', 'username', 'email'],
@@ -90,14 +93,12 @@ abstract class UserWithProfileBench extends Benchmark
      * @Subject
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
-     * @ParamProviders("userAmounts")
+     * @ParamProviders({"userAmounts"})
      */
     public function createUserWithProfileSingleTransaction(array $params): void
     {
         $userSeeds = $this->userSeeds->take($params['times']);
-
         $entityFactory = $this->getEntityFactory();
-
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
@@ -123,7 +124,7 @@ abstract class UserWithProfileBench extends Benchmark
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
-    public function loadUserWithoutProfile()
+    public function loadUserWithoutProfile(): void
     {
         $this->getConfigurator()
             ->getUserRepository()
@@ -135,16 +136,24 @@ abstract class UserWithProfileBench extends Benchmark
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
-    public function loadUserWithProfile()
+    public function loadUserWithProfile(): void
     {
         $this->getConfigurator()
             ->getUserRepository()
             ->findByPKWithProfile(123);
     }
 
-    public function userAmounts(): \Generator
+    public function userAmounts(): Generator
     {
         yield 'five records' => ['times' => 5];
         yield 'ten records' => ['times' => 10];
+    }
+
+    public function getSchema(string $mapper): array
+    {
+        return array_merge(
+            (new UserSchema($mapper))->withProfileRelation()->toArray(),
+            (new UserProfileSchema($mapper))->withUserRelation()->toArray()
+        );
     }
 }

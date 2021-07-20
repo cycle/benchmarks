@@ -9,6 +9,7 @@ use Cycle\Benchmarks\Base\Configurators\AbstractConfigurator;
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
 use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
+use Cycle\ORM\MapperInterface;
 use Spiral\Core\Container;
 
 abstract class Benchmark
@@ -21,14 +22,23 @@ abstract class Benchmark
         $this->container = new Container();
     }
 
-    public function setUp(): void
+    public function setUp(array $bindings = []): void
     {
+        foreach ($bindings as $alias => $resolver) {
+            $this->getContainer()->bind($alias, $resolver);
+        }
+
         /** @var DriverInterface $databaseDriver */
         $databaseDriver = $this->container->get(DriverInterface::class);
         $this->configurator = $this->container->make(ConfiguratorInterface::class, [
             'driver' => $databaseDriver,
         ]);
-        $this->configurator->configure();
+
+        $this->configurator->configure(
+            $this->getSchema(
+                $bindings[MapperInterface::class]
+            )
+        );
     }
 
     public function tearDown(): void
@@ -70,4 +80,6 @@ abstract class Benchmark
             $callback();
         }
     }
+
+    abstract public function getSchema(string $mapper): array;
 }
