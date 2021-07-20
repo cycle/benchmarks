@@ -8,7 +8,7 @@ use Cycle\Benchmarks\Base\DatabaseDrivers\CycleOrmDriver;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
 use Cycle\Benchmarks\v2\CycleOrmEntityFactory;
 
-class UserWithoutProfileBench extends \Cycle\Benchmarks\Base\Benchmarks\UserWithoutProfileBench
+class UserWithCommentsBench extends \Cycle\Benchmarks\Base\Benchmarks\UserWithCommentsBench
 {
     public function setUp(): void
     {

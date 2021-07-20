@@ -1,0 +1,5 @@
+{
+  "core.extensions": [
+    "Cycle\\Benchmarks\\Base\\PhpBench\\Extensions\\LoggerExtension"
+  ]
+}

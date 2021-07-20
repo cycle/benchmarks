@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
 
+use Cycle\Benchmarks\Base\Commands\RunStrategy\PhpBenchPackageStrategy;
+use Cycle\Benchmarks\Base\Commands\RunStrategy\ProcessStrategy;
 use DirectoryIterator;
-use PhpBench\Console\Application;
-use PhpBench\PhpBench;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,36 +25,29 @@ class RunCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projects = $input->getArgument('projects');
+        $config = $input->getOption('config');
+        $iterations = (int)$input->getOption('iterations');
+        $revolutions = (int)$input->getOption('revolutions');
 
-        $output->writeln('<info>Run benchmarks to projects: '.implode(', ', $projects).'</info>');
+        $output->writeln('<info>Run benchmarks to projects: ' . implode(', ', $projects) . '</info>');
 
-        foreach ($projects as $project) {
-            $project = 'benchmarks' . DIRECTORY_SEPARATOR . $project;
+        $strategy = $input->getOption('process')
+            ? new ProcessStrategy()
+            : new PhpBenchPackageStrategy();
+
+        foreach ($projects as $projectName) {
+            $project = 'benchmarks' . DIRECTORY_SEPARATOR . $projectName;
 
             $projectDir = ROOT . DIRECTORY_SEPARATOR . $project;
 
-            $this->configureProject($projectDir, $output);
-
-            if ($input->getOption('process')) {
-                $this->runAsProcess($project, $output);
-            } else {
-                $this->runAsApplication($project, $output);
-            }
+            $this->runComposerCommands($projectDir, $output);
+            $strategy->run($project, $config, $iterations, $revolutions, $output);
         }
 
         return Command::SUCCESS;
     }
 
-    protected function configure()
-    {
-        $this->setDescription('Run benchmark');
-
-        $this
-            ->addOption('process', 'p', InputOption::VALUE_NONE, 'Use separate process to run benchmarks')
-            ->addArgument('projects', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Projects to bench', $this->getProjects());
-    }
-
-    protected function configureProject(string $projectDir, OutputInterface $output): void
+    protected function runComposerCommands(string $projectDir, OutputInterface $output): void
     {
         if (!is_dir($projectDir . DIRECTORY_SEPARATOR . 'vendor')) {
             $command = ['composer', 'install'];
@@ -73,55 +65,6 @@ class RunCommand extends Command
         }
     }
 
-    /**
-     * @param string $project
-     * @param OutputInterface $output
-     */
-    protected function runAsProcess(string $project, OutputInterface $output): void
-    {
-        $process = new Process([
-            'vendor/bin/phpbench',
-            'run',
-            '--working-dir=' . ROOT . '/' . $project,
-            '--bootstrap=' . 'bootstrap.php',
-            '--report=' . 'aggregate',
-            '--config=' . ROOT . '/phpbench.json',
-            'tests'
-        ]);
-
-        $process->start();
-
-        foreach ($process as $type => $data) {
-            $output->write(
-                $data,
-                false,
-                OutputInterface::OUTPUT_NORMAL
-            );
-        }
-    }
-
-    private function runAsApplication(string $project, OutputInterface $output)
-    {
-        $container = PhpBench::loadContainer(
-            $input = new ArrayInput(
-                [
-                    'run',
-                    '--working-dir' => $project,
-                    '--bootstrap' => 'bootstrap.php',
-                    '--report' => 'aggregate',
-                    '--config' => ROOT . '/phpbench.json',
-                    'path' => 'tests'
-                ]
-            )
-        );
-
-        $app = $container->get(Application::class);
-
-        $app->setAutoExit(false);
-
-        $app->run($input, $output);
-    }
-
     protected function getProjects(): array
     {
         $dirs = new DirectoryIterator(ROOT . DIRECTORY_SEPARATOR . 'benchmarks');
@@ -135,5 +78,17 @@ class RunCommand extends Command
         }
 
         return $projects;
+    }
+
+    protected function configure(): void
+    {
+        $this->setDescription('Run benchmark');
+
+        $this
+            ->addOption('process', 'p', InputOption::VALUE_NONE, 'Use separate process to run benchmarks')
+            ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Config file', 'phpbench.json')
+            ->addOption('iterations', 'i', InputOption::VALUE_OPTIONAL, 'Number of iterations', 1)
+            ->addOption('revolutions', 'r', InputOption::VALUE_OPTIONAL, 'Number of revolutions', 1)
+            ->addArgument('projects', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Projects to bench', $this->getProjects());
     }
 }

@@ -1,24 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace Cycle\Benchmarks\Base;
-
+namespace Cycle\Benchmarks\Base\Seeds;
 
 use ArrayIterator;
 use InvalidArgumentException;
 
 class Seeds implements \ArrayAccess, \IteratorAggregate
 {
-    /**
-     * The items contained in the seed.
-     *
-     * @var array
-     */
-    protected $items = [];
-
-    public function __construct($items = [])
+    public function __construct(
+        protected string $class,
+        protected array $items = []
+    )
     {
-        $this->items = $items;
     }
 
     /**
@@ -37,7 +31,7 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * @param callable $callback
      * @return $this
      */
-    public function each(callable $callback)
+    public function each(callable $callback): self
     {
         foreach ($this as $key => $item) {
             if ($callback($item, $key) === false) {
@@ -54,19 +48,19 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * @param int $size
      * @return static
      */
-    public function chunk(int $size)
+    public function chunk(int $size): self
     {
         if ($size <= 0) {
-            return new static;
+            return new static($this->class);
         }
 
         $chunks = [];
 
         foreach (array_chunk($this->items, $size, true) as $chunk) {
-            $chunks[] = new static($chunk);
+            $chunks[] = new static($this->class, $chunk);
         }
 
-        return new static($chunks);
+        return new static($this->class, $chunks);
     }
 
     public function first(): array
@@ -78,11 +72,11 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * Get one or a specified number of items randomly from the collection.
      *
      * @param int|null $number
-     * @return static|mixed
+     * @return static
      *
      * @throws InvalidArgumentException
      */
-    public function random(int $number = null)
+    public function random(int $number = null): self
     {
         $requested = is_null($number) ? 1 : $number;
         $count = count($this->items);
@@ -107,7 +101,7 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
             }
         }
 
-        return new static($array);
+        return new static($this->class, $array);
     }
 
     /**
@@ -115,9 +109,9 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      *
      * @return static
      */
-    public function reverse()
+    public function reverse(): self
     {
-        return new static(array_reverse($this->items, true));
+        return new static($this->class, array_reverse($this->items, true));
     }
 
     /**
@@ -126,7 +120,7 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * @param int|null $seed
      * @return static
      */
-    public function shuffle(int $seed = null)
+    public function shuffle(int $seed = null): self
     {
         if (is_null($seed)) {
             shuffle($this->items);
@@ -136,7 +130,7 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
             mt_srand();
         }
 
-        return new static($this->items);
+        return new static($this->class, $this->items);
     }
 
     /**
@@ -146,9 +140,11 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * @param int|null $length
      * @return static
      */
-    public function slice(int $offset, int $length = null)
+    public function slice(int $offset, int $length = null): self
     {
-        return new static(array_slice($this->items, $offset, $length, true));
+        return new static(
+            $this->class, array_slice($this->items, $offset, $length, true)
+        );
     }
 
     /**
@@ -157,7 +153,7 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * @param int $count
      * @return static
      */
-    public function skip(int $count)
+    public function skip(int $count): self
     {
         return $this->slice($count);
     }
@@ -168,7 +164,7 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
      * @param int $limit
      * @return static
      */
-    public function take(int $limit)
+    public function take(int $limit): self
     {
         if ($limit < 0) {
             return $this->slice($limit, abs($limit));
@@ -227,5 +223,10 @@ class Seeds implements \ArrayAccess, \IteratorAggregate
     public function offsetUnset($offset)
     {
         // TODO: Implement offsetUnset() method.
+    }
+
+    public function getClass(): string
+    {
+        return $this->class;
     }
 }

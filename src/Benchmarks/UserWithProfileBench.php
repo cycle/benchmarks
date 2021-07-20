@@ -10,9 +10,10 @@ use Cycle\Benchmarks\Base\Seeds\Seeds;
 /**
  * @method UserConfigurator getConfigurator()
  */
-abstract class UserWithoutProfileBench extends Benchmark
+abstract class UserWithProfileBench extends Benchmark
 {
     public Seeds $userSeeds;
+    public Seeds $profileSeeds;
 
     public function setUp(): void
     {
@@ -27,7 +28,15 @@ abstract class UserWithoutProfileBench extends Benchmark
             ]
         );
 
+        $this->getConfigurator()->getDriver()->insertTableRows(
+            'profile', ['id', 'fullName', 'user_id'],
+            [
+                [234, 'John Smith', 123]
+            ]
+        );
+
         $this->userSeeds = $this->getConfigurator()->getUserSeeds();
+        $this->profileSeeds = $this->getConfigurator()->getUserProfileSeeds();
     }
 
     /**
@@ -35,26 +44,21 @@ abstract class UserWithoutProfileBench extends Benchmark
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
-    public function makeUser(): void
+    public function createUserWithProfile(): void
     {
         $entityFactory = $this->getEntityFactory();
         $entity = $entityFactory->create($this->userSeeds->getClass());
-        $entityFactory->hydrate($entity, $this->userSeeds->first());
-    }
-
-    /**
-     * @Subject
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     */
-    public function createUser(): void
-    {
-        $entityFactory = $this->getEntityFactory();
-        $entity = $entityFactory->create($this->userSeeds->getClass());
+        $profileEntity = $entityFactory->create($this->profileSeeds->getClass());
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
+        $profile = $entityFactory->hydrate(
+            $profileEntity,
+            $this->profileSeeds->first()
+        );
+
         $user = $entityFactory->hydrate($entity, $this->userSeeds->first());
+        $user->setProfile($profile);
         $entityFactory->store($user);
 
         $this->runCallbacks($entityFactory->afterCreationCallbacks());
@@ -64,20 +68,51 @@ abstract class UserWithoutProfileBench extends Benchmark
      * @Subject
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
+     */
+    public function createUserWithExistsProfile(): void
+    {
+        $entityFactory = $this->getEntityFactory();
+        $entity = $entityFactory->create($this->userSeeds->getClass());
+
+        $profile = $this
+            ->getConfigurator()
+            ->getUserProfileRepository()
+            ->findByPK(234);
+
+        $this->runCallbacks($entityFactory->beforeCreationCallbacks());
+        $user = $entityFactory->hydrate($entity, $this->userSeeds->first());
+        $user->setProfile($profile);
+        $entityFactory->store($entity);
+        $this->runCallbacks($entityFactory->afterCreationCallbacks());
+    }
+
+    /**
+     * @Subject
+     * @BeforeMethods("setUp")
+     * @AfterMethods("tearDown")
      * @ParamProviders("userAmounts")
      */
-    public function createUserInSingleTransaction(array $params): void
+    public function createUserWithProfileSingleTransaction(array $params): void
     {
-        $seeds = $this->userSeeds->take($params['times']);
+        $userSeeds = $this->userSeeds->take($params['times']);
 
         $entityFactory = $this->getEntityFactory();
 
+
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
-        foreach ($seeds as $seed) {
-            $entity = $entityFactory->create($seeds->getClass());
+        foreach ($userSeeds as $seed) {
+            $entity = $entityFactory->create($userSeeds->getClass());
             $user = $entityFactory->hydrate($entity, $seed);
-            $entityFactory->store($user);
+
+            $profileEntity = $entityFactory->create($this->profileSeeds->getClass());
+            $profile = $entityFactory->hydrate(
+                $profileEntity,
+                $this->profileSeeds->random()->first()
+            );
+
+            $user->setProfile($profile);
+            $entityFactory->store($entity);
         }
 
         $this->runCallbacks($entityFactory->afterCreationCallbacks());
@@ -88,11 +123,23 @@ abstract class UserWithoutProfileBench extends Benchmark
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
-    public function loadUser()
+    public function loadUserWithoutProfile()
     {
         $this->getConfigurator()
             ->getUserRepository()
             ->findByPK(123);
+    }
+
+    /**
+     * @Subject
+     * @BeforeMethods("setUp")
+     * @AfterMethods("tearDown")
+     */
+    public function loadUserWithProfile()
+    {
+        $this->getConfigurator()
+            ->getUserRepository()
+            ->findByPKWithProfile(123);
     }
 
     public function userAmounts(): \Generator

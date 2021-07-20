@@ -8,30 +8,41 @@ use Cycle\ORM\Transaction;
 
 abstract class BaseCycleOrmEntityFactory extends AbstractEntityFactory
 {
-    protected ORMInterface $orm;
     protected Transaction $transaction;
 
-    public function __construct(ORMInterface $orm)
+    public function __construct(protected ORMInterface $orm)
     {
-        $this->orm = $orm;
-        $this->transaction = new Transaction($this->orm);
+        $this->createTransaction();
 
         $this->beforeCreation(function () {
-            $this->transaction = new Transaction($this->orm);
+            $this->createTransaction();
         });
 
         $this->afterCreation(function () {
-            $this->transaction->run();
+            $this->commitTransaction();
         });
     }
 
-    public function store(object $entity): void
+    public function store(object $entity, array $options = []): void
     {
-        $this->transaction->persist($entity);
+        $this->transaction->persist(
+            $entity,
+            $options['mode'] ?? Transaction::MODE_CASCADE
+        );
     }
 
     public function hydrate(object $entity, array $data): object
     {
         return $this->orm->getMapper($entity)->hydrate($entity, $data);
+    }
+
+    private function createTransaction(): void
+    {
+        $this->transaction = new Transaction($this->orm);
+    }
+
+    private function commitTransaction(): void
+    {
+        $this->transaction->run();
     }
 }

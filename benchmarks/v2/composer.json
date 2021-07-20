@@ -1,21 +1,21 @@
 {
-  "name": "cycle/benchmarks-v1",
-  "description": "Cycle ORM benchmarks",
-  "minimum-stability": "stable",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Pavel Buchnev",
-      "email": "butschster@gmail.com"
+    "name": "cycle/benchmarks-v1",
+    "description": "Cycle ORM benchmarks",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pavel Buchnev",
+            "email": "butschster@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Cycle\\Benchmarks\\v2\\": "./src",
+            "Benchmarks\\v2\\": "./tests"
+        }
+    },
+    "require": {
+        "cycle/orm": "^2.0.x-dev"
     }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Cycle\\Benchmarks\\v2\\": "./src",
-      "Benchmarks\\v2\\": "./tests"
-    }
-  },
-  "require": {
-    "cycle/orm": "^2.0.x-dev"
-  }
 }

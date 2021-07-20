@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace Cycle\Benchmarks\Base;
+namespace Cycle\Benchmarks\Base\Seeds;
 
-class SeedRepository
+class FileSeedRepository implements SeedRepositoryInterface
 {
-    private array $data;
+    protected array $data;
 
     public function __construct(array $data)
     {
@@ -26,6 +26,6 @@ class SeedRepository
             throw new \RuntimeException("Seeds for entity [$entity] not found.");
         }
 
-        return new Seeds($this->data[$entity]);
+        return new Seeds($entity, $this->data[$entity]);
     }
 }

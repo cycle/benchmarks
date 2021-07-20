@@ -12,18 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
 {
-    private bool $showBench;
     private bool $firstTime = true;
-
 
     public function __construct(
         OutputInterface $output,
         VariantFormatter $formatter,
         TimeUnit $timeUnit,
-        bool $showBench = false
-    ) {
+        private bool $showBench = false
+    )
+    {
         parent::__construct($output, $formatter, $timeUnit);
-        $this->showBench = $showBench;
     }
 
     public function benchmarkStart(Benchmark $benchmark): void
@@ -35,11 +33,14 @@ class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
             }
             $this->firstTime = false;
 
+            $projectName = trim(preg_replace('!\s+!', ' ', str_replace('\\', ' ', $benchmark->getClass())));
+
+            $projectName = str_replace([
+                'Benchmarks', 'Bench'
+            ], '', $this->studly($this->snake($projectName)));
+
             $this->output->writeln(
-                'Project: ' . trim(preg_replace('!\s+!', ' ', str_replace('\\', ' ', str_replace([
-                    'Benchmarks',
-                    $benchmark->getName()
-                ], '', $benchmark->getClass()))))
+                'Bench: ' . $projectName
             );
         }
     }
@@ -52,5 +53,33 @@ class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
     public function endSuite(Suite $suite): void
     {
 
+    }
+
+
+    /**
+     * Convert a string to snake case.
+     *
+     * @param string $value
+     * @param string $delimiter
+     * @return string
+     */
+    public function snake(string $value, string $delimiter = '_')
+    {
+        $key = $value;
+
+        if (!ctype_lower($value)) {
+            $value = preg_replace('/\s+/u', '', ucwords($value));
+
+            $value = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
+        }
+
+        return $value;
+    }
+
+    public function studly(string $value)
+    {
+        $value = ucwords(str_replace(['-', '_'], ' ', $value));
+
+        return $value;
     }
 }

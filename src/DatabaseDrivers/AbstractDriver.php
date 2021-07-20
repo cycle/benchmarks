@@ -9,8 +9,13 @@ use Spiral\Core\Container;
 abstract class AbstractDriver implements DriverInterface
 {
     protected EntityFactoryInterface $entityFactory;
-    protected Container $container;
     protected \Butschster\EntityFaker\Factory $factory;
+
+    public function __construct(
+        protected Container $container
+    )
+    {
+    }
 
     public function configure(): void
     {

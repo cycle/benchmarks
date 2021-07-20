@@ -7,6 +7,7 @@ use Butschster\EntityFaker\EntityFactoryInterface;
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\Factory;
 use Cycle\ORM\ORMInterface;
+use Cycle\ORM\RepositoryInterface;
 use Cycle\ORM\Schema;
 use Spiral\Core\Container;
 use Spiral\Database\Config\DatabaseConfig;
@@ -23,7 +24,7 @@ class CycleOrmDriver extends AbstractDriver
 
     public function __construct(Container $container)
     {
-        $this->container = $container;
+        parent::__construct($container);
 
         $driver = new SQLiteDriver([
             'connection' => 'sqlite::memory:',
@@ -68,6 +69,20 @@ class CycleOrmDriver extends AbstractDriver
         }
 
         $schema->save();
+    }
+
+    public function insertTableRows(string $table, array $columns = [], array $rowsets = []): void
+    {
+        $this->database
+            ->insert($table)
+            ->columns($columns)
+            ->values($rowsets)
+            ->run();
+    }
+
+    public function getRepository(string $entity): RepositoryInterface
+    {
+        return $this->orm->getRepository($entity);
     }
 
     public function setSchema(array $schema): void

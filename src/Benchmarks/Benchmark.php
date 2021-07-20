@@ -8,7 +8,7 @@ use Butschster\EntityFaker\Factory;
 use Cycle\Benchmarks\Base\Configurators\AbstractConfigurator;
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
-use Cycle\Benchmarks\Base\SeedRepository;
+use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
 use Spiral\Core\Container;
 
 abstract class Benchmark
@@ -41,7 +41,7 @@ abstract class Benchmark
         return $this->getFactory()->getEntityFactory();
     }
 
-    public function getSeeds(): SeedRepository
+    public function getSeeds(): SeedRepositoryInterface
     {
         return $this->configurator->getSeeds();
     }
@@ -61,7 +61,10 @@ abstract class Benchmark
         return $this->container;
     }
 
-    public function runCallbacks(array $callbacks)
+    /**
+     * @param array<callable> $callbacks
+     */
+    public function runCallbacks(array $callbacks): void
     {
         foreach ($callbacks as $callback) {
             $callback();

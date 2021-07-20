@@ -5,24 +5,32 @@ namespace Cycle\Benchmarks\Base\Configurators;
 
 use Butschster\EntityFaker\Factory;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
-use Cycle\Benchmarks\Base\SeedRepository;
+use Cycle\Benchmarks\Base\Seeds\InMemorySeedRepository;
+use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
 
 abstract class AbstractConfigurator implements ConfiguratorInterface
 {
-    private SeedRepository $seeds;
-    private DriverInterface $driver;
+    protected const SEED_TIMES = 100;
+    protected SeedRepositoryInterface $seeds;
 
-    public function __construct(DriverInterface $driver)
+    public function __construct(private DriverInterface $driver)
     {
         $this->driver = $driver;
-        $this->seeds = new SeedRepository([]);
     }
 
     public function configure(): void
     {
         $this->driver->setSchema($this->getSchema());
         $this->driver->configure();
+
+        $this->createTables();
+        $this->defineEntities($this->getFactory());
+        $this->seedEntityData();
     }
+
+    abstract public function createTables(): void;
+
+    abstract public function defineEntities(Factory $factory): void;
 
     public function getFactory(): Factory
     {
@@ -34,15 +42,22 @@ abstract class AbstractConfigurator implements ConfiguratorInterface
         return $this->driver;
     }
 
-    public function getSeeds(): SeedRepository
+    public function getSeeds(): SeedRepositoryInterface
     {
         return $this->seeds;
     }
 
     protected function seedEntityData(): void
     {
-        $this->seeds = new SeedRepository(
-            $this->getFactory()->export(ROOT . '/runtime/seeds', 1000, false)
+        $this->seeds = new InMemorySeedRepository(
+            $this->getFactory()->raw(self::SEED_TIMES)
         );
     }
+
+//    protected function seedEntityData(): void
+//    {
+//        $this->seeds = new FileSeedRepository(
+//            $this->getFactory()->export(ROOT . '/runtime/seeds', self::SEED_TIMES, false)
+//        );
+//    }
 }
