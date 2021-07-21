@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\Configurators;
 
 use Butschster\EntityFaker\Factory;
+use Butschster\EntityFaker\Seeds\SeedRepositoryInterface;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
-use Cycle\Benchmarks\Base\Seeds\InMemorySeedRepository;
-use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
 
 abstract class AbstractConfigurator implements ConfiguratorInterface
 {
@@ -48,9 +47,7 @@ abstract class AbstractConfigurator implements ConfiguratorInterface
 
     protected function seedEntityData(): void
     {
-        $this->seeds = new InMemorySeedRepository(
-            $this->getFactory()->raw(self::SEED_TIMES)
-        );
+        $this->seeds = $this->getFactory()->raw(self::SEED_TIMES);
     }
 
 //    protected function seedEntityData(): void

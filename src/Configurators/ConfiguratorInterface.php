@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\Configurators;
 
 use Butschster\EntityFaker\Factory;
+use Butschster\EntityFaker\Seeds\SeedRepositoryInterface;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
-use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
 
 interface ConfiguratorInterface
 {

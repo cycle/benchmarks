@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Benchmarks;
 
+use Butschster\EntityFaker\Seeds\Seeds;
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
 use Cycle\Benchmarks\Base\Schemas\UserProfileSchema;
 use Cycle\Benchmarks\Base\Schemas\UserSchema;
-use Cycle\Benchmarks\Base\Seeds\Seeds;
 use Generator;
 
 /**

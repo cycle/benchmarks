@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\Configurators;
 
 use Butschster\EntityFaker\Factory;
+use Butschster\EntityFaker\Seeds\Seeds;
 use Cycle\Benchmarks\Base\Entites\Comment;
 use Cycle\Benchmarks\Base\Entites\UserProfile;
 use Cycle\Benchmarks\Base\Entites\User;
 use Cycle\Benchmarks\Base\Repositories\CommentRepository;
 use Cycle\Benchmarks\Base\Repositories\UserProfileRepository;
 use Cycle\Benchmarks\Base\Repositories\UserRepository;
-use Cycle\Benchmarks\Base\Seeds\Seeds;
 use Cycle\ORM\Mapper\Mapper;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
@@ -53,19 +53,19 @@ class UserConfigurator extends AbstractConfigurator
         });
     }
 
-    public function getUserRepository(): UserRepository
+    public function getUserRepository(string $role = User::class): UserRepository
     {
-        return $this->getDriver()->getRepository(User::class);
+        return $this->getDriver()->getRepository($role);
     }
 
-    public function getUserProfileRepository(): UserProfileRepository
+    public function getUserProfileRepository(string $role = UserProfile::class): UserProfileRepository
     {
-        return $this->getDriver()->getRepository(UserProfile::class);
+        return $this->getDriver()->getRepository($role);
     }
 
-    public function getCommentRepository(): CommentRepository
+    public function getCommentRepository(string $role = Comment::class): CommentRepository
     {
-        return $this->getDriver()->getRepository(Comment::class);
+        return $this->getDriver()->getRepository($role);
     }
 
     public function getUserSeeds(): Seeds
