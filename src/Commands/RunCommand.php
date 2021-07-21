@@ -28,6 +28,8 @@ class RunCommand extends Command
         $config = $input->getOption('config');
         $iterations = (int)$input->getOption('iterations');
         $revolutions = (int)$input->getOption('revolutions');
+        $filter = (array) $input->getOption('filter');
+        $groups = (array) $input->getOption('group');
 
         $output->writeln('<info>Run benchmarks to projects: ' . implode(', ', $projects) . '</info>');
 
@@ -41,7 +43,7 @@ class RunCommand extends Command
             $projectDir = ROOT . DIRECTORY_SEPARATOR . $project;
 
             $this->runComposerCommands($projectDir, $output);
-            $strategy->run($project, $config, $iterations, $revolutions, $output);
+            $strategy->run($project, $filter, $groups, $config, $iterations, $revolutions, $output);
         }
 
         return Command::SUCCESS;
@@ -87,6 +89,8 @@ class RunCommand extends Command
         $this
             ->addOption('process', 'p', InputOption::VALUE_NONE, 'Use separate process to run benchmarks')
             ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Config file', 'phpbench.json')
+            ->addOption('group', 'g', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 'Groups')
+            ->addOption('filter', 'f', InputOption::VALUE_OPTIONAL, 'Filter')
             ->addOption('iterations', 'i', InputOption::VALUE_OPTIONAL, 'Number of iterations', 1)
             ->addOption('revolutions', 'r', InputOption::VALUE_OPTIONAL, 'Number of revolutions', 1)
             ->addArgument('projects', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Projects to bench', $this->getProjects());

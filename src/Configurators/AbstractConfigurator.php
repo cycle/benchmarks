@@ -10,7 +10,7 @@ use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
 
 abstract class AbstractConfigurator implements ConfiguratorInterface
 {
-    protected const SEED_TIMES = 100;
+    protected const SEED_TIMES = 300;
     protected SeedRepositoryInterface $seeds;
 
     public function __construct(private DriverInterface $driver)

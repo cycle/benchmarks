@@ -55,6 +55,7 @@ abstract class UserWithCommentsBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      * @ParamProviders({"commentAmounts"})
@@ -88,6 +89,7 @@ abstract class UserWithCommentsBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */

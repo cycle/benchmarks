@@ -8,11 +8,11 @@ use Symfony\Component\Process\Process;
 
 class ProcessStrategy implements StrategyInterface
 {
-    public function run(string $project, string $config, int $iterations, int $revolutions, OutputInterface $output): void
+    public function run(string $project, array $filter, array $groups, string $config, int $iterations, int $revolutions, OutputInterface $output): void
     {
         $tag = basename($project);
 
-        $process = new Process([
+        $args = [
             'vendor/bin/phpbench',
             'run',
             '--working-dir=' . ROOT . '/' . $project,
@@ -21,10 +21,24 @@ class ProcessStrategy implements StrategyInterface
             '--iterations=' . $iterations,
             '--revs=' . $revolutions,
             '--config=' . ROOT . DIRECTORY_SEPARATOR . $config,
-            '--tag=' . $tag,
-            '--store',
+//            '--tag=' . $tag,
+//            '--store',
             'tests'
-        ]);
+        ];
+
+        if (!empty($filter)) {
+            foreach ($filter as $f) {
+                $args[] = '--filter=' . $f;
+            }
+        }
+
+        if (!empty($groups)) {
+            foreach ($groups as $group) {
+                $args[] = '--group=' . $group;
+            }
+        }
+
+        $process = new Process($args);
 
         $process->start();
 

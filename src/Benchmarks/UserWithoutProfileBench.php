@@ -33,6 +33,7 @@ abstract class UserWithoutProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"hydrate"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
@@ -45,6 +46,7 @@ abstract class UserWithoutProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
@@ -63,6 +65,7 @@ abstract class UserWithoutProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      * @ParamProviders({"userAmounts"})
@@ -86,6 +89,7 @@ abstract class UserWithoutProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"find"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */

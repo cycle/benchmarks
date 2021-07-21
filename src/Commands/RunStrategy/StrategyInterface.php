@@ -9,6 +9,8 @@ interface StrategyInterface
 {
     public function run(
         string $project,
+        array $filter,
+        array $groups,
         string $config,
         int $iterations,
         int $revolutions,

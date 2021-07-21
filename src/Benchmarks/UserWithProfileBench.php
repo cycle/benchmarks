@@ -44,6 +44,7 @@ abstract class UserWithProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
@@ -69,6 +70,7 @@ abstract class UserWithProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
@@ -91,6 +93,7 @@ abstract class UserWithProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      * @ParamProviders({"userAmounts"})
@@ -121,6 +124,7 @@ abstract class UserWithProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"find"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
@@ -133,6 +137,7 @@ abstract class UserWithProfileBench extends Benchmark
 
     /**
      * @Subject
+     * @Groups({"find"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
