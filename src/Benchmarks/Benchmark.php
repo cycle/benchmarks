@@ -5,10 +5,11 @@ namespace Cycle\Benchmarks\Base\Benchmarks;
 
 use Butschster\EntityFaker\EntityFactoryInterface;
 use Butschster\EntityFaker\Factory;
+use Butschster\EntityFaker\Seeds\SeedRepositoryInterface;
 use Cycle\Benchmarks\Base\Configurators\AbstractConfigurator;
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
-use Cycle\Benchmarks\Base\Seeds\SeedRepositoryInterface;
+use Cycle\Benchmarks\Base\DatabaseDrivers\NullDriver;
 use Cycle\ORM\MapperInterface;
 use Spiral\Core\Container;
 
@@ -24,6 +25,10 @@ abstract class Benchmark
 
     public function setUp(array $bindings = []): void
     {
+        if (!isset($bindings[DriverInterface::class])) {
+            $bindings[DriverInterface::class] = NullDriver::class;
+        }
+
         foreach ($bindings as $alias => $resolver) {
             $this->getContainer()->bind($alias, $resolver);
         }

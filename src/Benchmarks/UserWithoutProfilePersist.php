@@ -11,7 +11,7 @@ use Cycle\Benchmarks\Base\Schemas\UserSchema;
 /**
  * @method UserConfigurator getConfigurator()
  */
-abstract class UserWithoutProfileBench extends Benchmark
+abstract class UserWithoutProfilePersist extends Benchmark
 {
     public Seeds $userSeeds;
 
@@ -20,13 +20,6 @@ abstract class UserWithoutProfileBench extends Benchmark
         $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
 
         parent::setUp($bindings);
-
-        $this->getConfigurator()->getDriver()->insertTableRows(
-            'user', ['id', 'username', 'email'],
-            [
-                [123, 'admin', 'admin@site.com']
-            ]
-        );
 
         $this->userSeeds = $this->getConfigurator()->getUserSeeds();
     }
@@ -85,19 +78,6 @@ abstract class UserWithoutProfileBench extends Benchmark
         }
 
         $this->runCallbacks($entityFactory->afterCreationCallbacks());
-    }
-
-    /**
-     * @Subject
-     * @Groups({"find"})
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     */
-    public function loadUser(): void
-    {
-        $this->getConfigurator()
-            ->getUserRepository()
-            ->findByPK(123);
     }
 
     public function userAmounts(): \Generator

@@ -14,9 +14,9 @@ use Spiral\Database\Config\DatabaseConfig;
 use Spiral\Database\Database;
 use Spiral\Database\DatabaseInterface;
 use Spiral\Database\DatabaseManager;
-use Spiral\Database\Driver\SQLite\SQLiteDriver;
+use Spiral\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
 
-class CycleOrmDriver extends AbstractDriver
+class SqliteDriver extends AbstractDriver
 {
     private DatabaseManager $dbal;
     private ORMInterface $orm;
@@ -26,7 +26,7 @@ class CycleOrmDriver extends AbstractDriver
     {
         parent::__construct($container);
 
-        $driver = new SQLiteDriver([
+        $driver = new DatabaseDriver([
             'connection' => 'sqlite::memory:',
             'username' => 'sqlite',
             'password' => '',
@@ -65,7 +65,7 @@ class CycleOrmDriver extends AbstractDriver
         }
 
         if (!empty($pk)) {
-            $schema->setPrimaryKeys([$pk]);
+            $schema->setPrimaryKeys($pk);
         }
 
         $schema->save();

@@ -21,6 +21,7 @@
         "symfony/console": "^5.3",
         "symfony/process": "^5.3",
         "spiral/config": "^2.8",
-        "monolog/monolog": "^2.3"
+        "monolog/monolog": "^2.3",
+        "nette/php-generator": "^3.5"
     }
 }

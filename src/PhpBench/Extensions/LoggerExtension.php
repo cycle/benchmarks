@@ -18,7 +18,12 @@ class LoggerExtension implements ExtensionInterface
             return new DotsLogger(
                 $container->get(ConsoleExtension::SERVICE_OUTPUT_ERR),
                 $container->get(VariantFormatter::class),
-                $container->get(TimeUnit::class),
+                new TimeUnit(
+                    TimeUnit::MILLISECONDS,
+                    TimeUnit::MILLISECONDS,
+                    TimeUnit::MODE_TIME,
+                    1
+                ),
                 true
             );
         }, ['runner.progress_logger' => ['name' => 'cycle']]);

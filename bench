@@ -3,6 +3,7 @@
 
 declare(strict_types=1);
 
+use Cycle\Benchmarks\Base\Commands\GenerateCommand;
 use Symfony\Component\Console\Application;
 use Cycle\Benchmarks\Base\Commands\RunCommand;
 
@@ -13,7 +14,8 @@ define('ROOT', __DIR__);
 $app = new Application('Cycle ORM benchmark tool.');
 
 $app->addCommands([
-    new RunCommand()
+    new RunCommand(),
+    new GenerateCommand()
 ]);
 
 $app->run();

@@ -12,6 +12,7 @@ use Cycle\ORM\Schema;
 class CommentSchema
 {
     protected array $schema = [
+        Schema::ROLE => 'comment',
         Schema::REPOSITORY => CommentRepository::class,
         Schema::DATABASE => 'default',
         Schema::TABLE => 'comment',
@@ -25,7 +26,7 @@ class CommentSchema
         Schema::RELATIONS => [],
     ];
 
-    public function __construct(string $mapper)
+    public function __construct(string $mapper, private string $key = Comment::class)
     {
         $this->schema[Schema::MAPPER] = $mapper;
     }
@@ -48,7 +49,7 @@ class CommentSchema
     public function toArray(): array
     {
         return [
-            Comment::class => $this->schema
+            $this->key => $this->schema
         ];
     }
 }

@@ -24,7 +24,7 @@ class PhpBenchPackageStrategy implements StrategyInterface
             '--config' => ROOT . DIRECTORY_SEPARATOR . $config,
             // '--tag' => $tag,
             // '--store',
-            'path' => 'tests'
+            'path' => 'benchmarks'
         ];
 
         if (!empty($filter)) {

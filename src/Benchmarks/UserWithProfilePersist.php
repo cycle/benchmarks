@@ -13,34 +13,10 @@ use Generator;
 /**
  * @method UserConfigurator getConfigurator()
  */
-abstract class UserWithProfileBench extends Benchmark
+abstract class UserWithProfilePersist extends UserWithProfileSelect
 {
     public Seeds $userSeeds;
     public Seeds $profileSeeds;
-
-    public function setUp(array $bindings = []): void
-    {
-        $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
-
-        parent::setUp($bindings);
-
-        $this->getConfigurator()->getDriver()->insertTableRows(
-            'user', ['id', 'username', 'email'],
-            [
-                [123, 'admin', 'admin@site.com']
-            ]
-        );
-
-        $this->getConfigurator()->getDriver()->insertTableRows(
-            'profile', ['id', 'fullName', 'user_id'],
-            [
-                [234, 'John Smith', 123]
-            ]
-        );
-
-        $this->userSeeds = $this->getConfigurator()->getUserSeeds();
-        $this->profileSeeds = $this->getConfigurator()->getUserProfileSeeds();
-    }
 
     /**
      * @Subject
@@ -122,43 +98,9 @@ abstract class UserWithProfileBench extends Benchmark
         $this->runCallbacks($entityFactory->afterCreationCallbacks());
     }
 
-    /**
-     * @Subject
-     * @Groups({"find"})
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     */
-    public function loadUserWithoutProfile(): void
-    {
-        $this->getConfigurator()
-            ->getUserRepository()
-            ->findByPK(123);
-    }
-
-    /**
-     * @Subject
-     * @Groups({"find"})
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     */
-    public function loadUserWithProfile(): void
-    {
-        $this->getConfigurator()
-            ->getUserRepository()
-            ->findByPKWithProfile(123);
-    }
-
     public function userAmounts(): Generator
     {
         yield 'five records' => ['times' => 5];
         yield 'ten records' => ['times' => 10];
-    }
-
-    public function getSchema(string $mapper): array
-    {
-        return array_merge(
-            (new UserSchema($mapper))->withProfileRelation()->toArray(),
-            (new UserProfileSchema($mapper))->withUserRelation()->toArray()
-        );
     }
 }

@@ -23,7 +23,7 @@ class ProcessStrategy implements StrategyInterface
             '--config=' . ROOT . DIRECTORY_SEPARATOR . $config,
 //            '--tag=' . $tag,
 //            '--store',
-            'tests'
+            'benchmarks'
         ];
 
         if (!empty($filter)) {

@@ -22,9 +22,9 @@ class UserConfigurator extends AbstractConfigurator
 {
     public function createTables(): void
     {
-        $this->getDriver()->createTable('user', ['id' => 'integer', 'username' => 'string', 'email' => 'string']);
-        $this->getDriver()->createTable('profile', ['id' => 'integer', 'fullName' => 'string', 'user_id' => 'integer']);
-        $this->getDriver()->createTable('comment', ['id' => 'integer', 'text' => 'string', 'user_id' => 'integer']);
+        $this->getDriver()->createTable('user', ['id' => 'integer', 'username' => 'string', 'email' => 'string'], [], []);
+        $this->getDriver()->createTable('profile', ['id' => 'integer', 'fullName' => 'string', 'user_id' => 'integer'], [], []);
+        $this->getDriver()->createTable('comment', ['id' => 'integer', 'text' => 'string', 'user_id' => 'integer'], [], []);
     }
 
     public function defineEntities(Factory $factory): void

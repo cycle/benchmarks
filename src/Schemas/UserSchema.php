@@ -13,6 +13,7 @@ use Cycle\ORM\Schema;
 class UserSchema
 {
     protected array $schema = [
+        Schema::ROLE => 'user',
         Schema::DATABASE => 'default',
         Schema::REPOSITORY => UserRepository::class,
         Schema::TABLE => 'user',
@@ -25,7 +26,7 @@ class UserSchema
         Schema::RELATIONS => [],
     ];
 
-    public function __construct(string $mapper)
+    public function __construct(string $mapper, private string $key = User::class)
     {
         $this->schema[Schema::MAPPER] = $mapper;
     }
@@ -63,7 +64,7 @@ class UserSchema
     public function toArray(): array
     {
         return [
-            User::class => $this->schema
+            $this->key => $this->schema
         ];
     }
 }

@@ -9,7 +9,7 @@ use Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface;
 
 abstract class AbstractConfigurator implements ConfiguratorInterface
 {
-    protected const SEED_TIMES = 300;
+    protected const SEED_TIMES = 100;
     protected SeedRepositoryInterface $seeds;
 
     public function __construct(private DriverInterface $driver)

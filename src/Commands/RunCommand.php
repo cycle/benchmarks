@@ -5,6 +5,7 @@ namespace Cycle\Benchmarks\Base\Commands;
 
 use Cycle\Benchmarks\Base\Commands\RunStrategy\PhpBenchPackageStrategy;
 use Cycle\Benchmarks\Base\Commands\RunStrategy\ProcessStrategy;
+use Cycle\Benchmarks\Base\ProjectFinder;
 use DirectoryIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,20 +17,24 @@ use Symfony\Component\Process\Process;
 class RunCommand extends Command
 {
     protected static $defaultName = 'run';
+    protected ProjectFinder $projectFinder;
 
     public function __construct(string $name = null)
     {
+        $this->projectFinder = new ProjectFinder(ROOT . DIRECTORY_SEPARATOR . 'benchmarks');
         parent::__construct($name);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        @unlink(ROOT . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'phpbench.log');
+
         $projects = $input->getArgument('projects');
         $config = $input->getOption('config');
         $iterations = (int)$input->getOption('iterations');
         $revolutions = (int)$input->getOption('revolutions');
-        $filter = (array) $input->getOption('filter');
-        $groups = (array) $input->getOption('group');
+        $filter = (array)$input->getOption('filter');
+        $groups = (array)$input->getOption('group');
 
         $output->writeln('<info>Run benchmarks to projects: ' . implode(', ', $projects) . '</info>');
 
@@ -37,12 +42,11 @@ class RunCommand extends Command
             ? new ProcessStrategy()
             : new PhpBenchPackageStrategy();
 
-        foreach ($projects as $projectName) {
+        foreach ($this->projectFinder as $projectName => $projectDir) {
             $project = 'benchmarks' . DIRECTORY_SEPARATOR . $projectName;
 
-            $projectDir = ROOT . DIRECTORY_SEPARATOR . $project;
-
             $this->runComposerCommands($projectDir, $output);
+
             $strategy->run($project, $filter, $groups, $config, $iterations, $revolutions, $output);
         }
 
@@ -69,17 +73,7 @@ class RunCommand extends Command
 
     protected function getProjects(): array
     {
-        $dirs = new DirectoryIterator(ROOT . DIRECTORY_SEPARATOR . 'benchmarks');
-        $projects = [];
-
-        foreach ($dirs as $dir) {
-            if ($dir->isDot()) {
-                continue;
-            }
-            $projects[] = $dir->getFileName();
-        }
-
-        return $projects;
+        return array_keys(iterator_to_array($this->projectFinder->find()));
     }
 
     protected function configure(): void
@@ -89,7 +83,7 @@ class RunCommand extends Command
         $this
             ->addOption('process', 'p', InputOption::VALUE_NONE, 'Use separate process to run benchmarks')
             ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Config file', 'phpbench.json')
-            ->addOption('group', 'g', InputOption::VALUE_OPTIONAL|InputOption::VALUE_IS_ARRAY, 'Groups')
+            ->addOption('group', 'g', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'Groups')
             ->addOption('filter', 'f', InputOption::VALUE_OPTIONAL, 'Filter')
             ->addOption('iterations', 'i', InputOption::VALUE_OPTIONAL, 'Number of iterations', 1)
             ->addOption('revolutions', 'r', InputOption::VALUE_OPTIONAL, 'Number of revolutions', 1)

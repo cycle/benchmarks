@@ -13,7 +13,7 @@ use Cycle\Benchmarks\Base\Schemas\UserSchema;
 /**
  * @method UserConfigurator getConfigurator()
  */
-abstract class UserWithCommentsBench extends Benchmark
+abstract class UserWithCommentsPersist extends Benchmark
 {
     public Seeds $userSeeds;
     public Seeds $profileSeeds;
@@ -24,29 +24,6 @@ abstract class UserWithCommentsBench extends Benchmark
         $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
 
         parent::setUp($bindings);
-
-        $this->getConfigurator()->getDriver()->insertTableRows(
-            'user', ['id', 'username', 'email'],
-            [
-                [100, 'admin', 'admin@site.com']
-            ]
-        );
-
-        $this->getConfigurator()->getDriver()->insertTableRows(
-            'profile', ['id', 'fullName', 'user_id'],
-            [
-                [200, 'John Smith', 100]
-            ]
-        );
-
-        $this->getConfigurator()->getDriver()->insertTableRows(
-            'comment', ['id', 'text', 'user_id'],
-            [
-                [300, 'Hello world', 100],
-                [301, 'Hello world1', 100],
-                [302, 'Hello world1', 100]
-            ]
-        );
 
         $this->userSeeds = $this->getConfigurator()->getUserSeeds();
         $this->profileSeeds = $this->getConfigurator()->getUserProfileSeeds();
@@ -79,37 +56,6 @@ abstract class UserWithCommentsBench extends Benchmark
             $user->addComment(
                 $entityFactory->hydrate($commentEntity, $seed)
             );
-        }
-
-        $this->runCallbacks($entityFactory->beforeCreationCallbacks());
-        $entityFactory->store($user);
-        $this->runCallbacks($entityFactory->afterCreationCallbacks());
-    }
-
-
-    /**
-     * @Subject
-     * @Groups({"persist"})
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     */
-    public function createUserWithExistsComments(): void
-    {
-        $entityFactory = $this->getEntityFactory();
-
-        $comments = $this->getConfigurator()->getCommentRepository()->findAll();
-        $entity = $entityFactory->create($this->userSeeds->getClass());
-        $user = $entityFactory->hydrate($entity, $this->userSeeds->first());
-
-        $profile = $this
-            ->getConfigurator()
-            ->getUserProfileRepository()
-            ->findByPK(200);
-
-        $user->setProfile($profile);
-
-        foreach ($comments as $comment) {
-            $user->addComment($comment);
         }
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());

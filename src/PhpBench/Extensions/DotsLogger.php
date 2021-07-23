@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\PhpBench\Extensions;
 
+use Cycle\Benchmarks\Base\LoggerFactory;
 use Monolog\Formatter\LineFormatter;
 use PhpBench\Benchmark\RunnerConfig;
 use PhpBench\Model\Benchmark;
@@ -75,7 +76,7 @@ class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
                 );
             }
 
-            $log->error(implode("\n", $stack)."\n\n==================== End of error ============================\n");
+            $log->error(implode("\n", $stack) . "\n\n==================== End of error ============================\n");
         }
     }
 
@@ -107,15 +108,8 @@ class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
 
     protected function createLogger(): Logger
     {
-        $log = new Logger('name');
-        $stream = new StreamHandler(ROOT . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'phpbench.log');
-        $formatter = new LineFormatter(null, "Y-m-d H:i:s", true, true);
-        $formatter->includeStacktraces();
-
-        $stream->setFormatter($formatter);
-
-        $log->pushHandler($stream);
-
-        return $log;
+        return (new LoggerFactory(
+            ROOT . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'phpbench.log'
+        ))->create();
     }
 }
