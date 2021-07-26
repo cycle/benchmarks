@@ -4,6 +4,7 @@
 declare(strict_types=1);
 
 use Cycle\Benchmarks\Base\Commands\GenerateCommand;
+use Cycle\Benchmarks\Base\Commands\GenerateReportCommand;
 use Symfony\Component\Console\Application;
 use Cycle\Benchmarks\Base\Commands\RunCommand;
 
@@ -15,7 +16,8 @@ $app = new Application('Cycle ORM benchmark tool.');
 
 $app->addCommands([
     new RunCommand(),
-    new GenerateCommand()
+    new GenerateCommand(),
+    new GenerateReportCommand()
 ]);
 
 $app->run();

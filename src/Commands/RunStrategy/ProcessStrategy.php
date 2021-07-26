@@ -21,8 +21,8 @@ class ProcessStrategy implements StrategyInterface
             '--iterations=' . $iterations,
             '--revs=' . $revolutions,
             '--config=' . ROOT . DIRECTORY_SEPARATOR . $config,
-//            '--tag=' . $tag,
-//            '--store',
+            '--tag=' . $tag,
+            '--store',
             'benchmarks'
         ];
 
@@ -38,7 +38,9 @@ class ProcessStrategy implements StrategyInterface
             }
         }
 
-        $process = new Process($args);
+        $process = new Process($args, env: [
+            'SUITE_UUID' => getenv('SUITE_UUID')
+        ]);
 
         $process->start();
 

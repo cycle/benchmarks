@@ -88,3 +88,19 @@ $ php bench generate -o
 // Генерация только перечисленных проектов
 $ php bench generate v1 v2
 ```
+
+### Просмотр отчетов
+
+```
+// Получение отчета последнего запуска
+$ php bench report
+$ php bench report latest
+
+// Получение предыдущеного отчета относительно текущего
+$ php bench report latest-1
+$ php bench report latest-2
+$ php bench report latest-n
+
+// Получение отчета по ID
+$ php bench report 1346426b575f15ce2a67562db9170e9fb54f3ec6
+```

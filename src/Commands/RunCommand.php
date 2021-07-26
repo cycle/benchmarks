@@ -6,8 +6,8 @@ namespace Cycle\Benchmarks\Base\Commands;
 use Cycle\Benchmarks\Base\Commands\RunStrategy\PhpBenchPackageStrategy;
 use Cycle\Benchmarks\Base\Commands\RunStrategy\ProcessStrategy;
 use Cycle\Benchmarks\Base\ProjectFinder;
-use DirectoryIterator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,6 +29,9 @@ class RunCommand extends Command
     {
         @unlink(ROOT . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'phpbench.log');
 
+        $suiteUuid = dechex((int)date('Ymd')) . substr(sha1(date('YmdHis')), 0, -7);
+        putenv("SUITE_UUID=$suiteUuid");
+
         $projects = $input->getArgument('projects');
         $config = $input->getOption('config');
         $iterations = (int)$input->getOption('iterations');
@@ -47,8 +50,16 @@ class RunCommand extends Command
 
             $this->runComposerCommands($projectDir, $output);
 
-            $strategy->run($project, $filter, $groups, $config, $iterations, $revolutions, $output);
+            $strategy->run(
+                $project, $filter, $groups, $config, $iterations, $revolutions, $output
+            );
         }
+
+        $this->getApplication()
+            ->find('report')
+            ->run(new ArrayInput(['id' => $suiteUuid,]), $output);
+
+        $output->writeln("Use command <info>php bench report $suiteUuid</info> to show this report");
 
         return Command::SUCCESS;
     }

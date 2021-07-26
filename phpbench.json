@@ -1,6 +1,40 @@
 {
-  "core.extensions": [
-    "Cycle\\Benchmarks\\Base\\PhpBench\\Extensions\\LoggerExtension"
-  ],
-  "runner.progress": "cycle"
+    "core.extensions": [
+        "Cycle\\Benchmarks\\Base\\PhpBench\\Extensions\\LoggerExtension"
+    ],
+    "runner.progress": "cycle",
+    "report.generators": {
+        "grouped": {
+            "generator": "expression",
+            "cols": [
+                "benchmark",
+                "subject",
+                "tag",
+                "revs",
+                "its",
+                "mem_peak",
+                "mean",
+                "best",
+                "worst",
+                "rstdev",
+                "set"
+            ],
+            "break": [
+                "benchmark", "subject", "set"
+            ]
+        },
+        "chart": {
+            "generator": "component",
+            "components": [
+                {
+                    "component": "bar_chart_aggregate",
+                    "title": "Example Bar Chart",
+                    "x_partition": ["benchmark_name","subject_name"],
+                    "bar_partition": ["suite_tag"],
+                    "y_expr": "mode(partition[\"result_time_avg\"])",
+                    "y_axes_label": "yValue as time precision 1"
+                }
+            ]
+        }
+    }
 }

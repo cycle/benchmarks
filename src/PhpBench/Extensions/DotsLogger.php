@@ -55,10 +55,15 @@ class DotsLogger extends \PhpBench\Progress\Logger\DotsLogger
 
     public function endSuite(Suite $suite): void
     {
+        // Injecting suite uuid from runner to generate identical report file names for all projects
+        $refl = new \ReflectionClass($suite);
+        $property = $refl->getProperty('uuid');
+        $property->setAccessible(true);
+        $property->setValue($suite, getenv('SUITE_UUID'));
+
+        // Store all errors to phpbench.log
         $log = $this->createLogger();
-
         $errorStacks = $suite->getErrorStacks();
-
         foreach ($errorStacks as $errorStack) {
             $stack = [sprintf(
                 "%s::%s",

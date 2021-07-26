@@ -22,8 +22,8 @@ class PhpBenchPackageStrategy implements StrategyInterface
             '--iterations' => [$iterations],
             '--revs' => [$revolutions],
             '--config' => ROOT . DIRECTORY_SEPARATOR . $config,
-            // '--tag' => $tag,
-            // '--store',
+            '--tag' => $tag,
+            '--store',
             'path' => 'benchmarks'
         ];
 
@@ -36,7 +36,6 @@ class PhpBenchPackageStrategy implements StrategyInterface
         }
 
         $input = new ArrayInput($args);
-
         $container = PhpBench::loadContainer($input);
 
         $app = $container->get(Application::class);
