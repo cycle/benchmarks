@@ -11,13 +11,12 @@ class BenchmarkGenerator
 
     public function generate(
         string $project,
-        string $mapper,
         string $benchmark,
         array $bindings,
         string $namespace
     ): Benchmark
     {
-        $className = $this->getClassName($benchmark) . $this->getClassName($mapper);
+        $className = $this->getClassName($benchmark);
         $filePath = $this->makeBenchmarkPath($project, $className);
 
         $file = new \Nette\PhpGenerator\PhpFile;

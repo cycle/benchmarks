@@ -4,37 +4,23 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\Benchmarks;
 
 use Butschster\EntityFaker\Seeds\Seeds;
-use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
+use Cycle\Benchmarks\Base\Entites\User;
+use Cycle\Benchmarks\Base\Schemas\SchemaFactory;
 use Cycle\Benchmarks\Base\Schemas\UserSchema;
 
 /**
  * @method UserConfigurator getConfigurator()
  */
-abstract class UserWithoutProfilePersist extends Benchmark
+abstract class SingleEntityPersist extends DatabaseBenchmark
 {
     public Seeds $userSeeds;
 
     public function setUp(array $bindings = []): void
     {
-        $bindings[ConfiguratorInterface::class] = UserConfigurator::class;
-
         parent::setUp($bindings);
 
         $this->userSeeds = $this->getConfigurator()->getUserSeeds();
-    }
-
-    /**
-     * @Subject
-     * @Groups({"hydrate"})
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     */
-    public function makeUser(): void
-    {
-        $entityFactory = $this->getEntityFactory();
-        $entity = $entityFactory->create($this->userSeeds->getClass());
-        $entityFactory->hydrate($entity, $this->userSeeds->first());
     }
 
     /**
@@ -43,10 +29,10 @@ abstract class UserWithoutProfilePersist extends Benchmark
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
      */
-    public function createUser(): void
+    public function store(): void
     {
         $entityFactory = $this->getEntityFactory();
-        $entity = $entityFactory->create($this->userSeeds->getClass());
+        $entity = new User();
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
@@ -61,9 +47,9 @@ abstract class UserWithoutProfilePersist extends Benchmark
      * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
-     * @ParamProviders({"userAmounts"})
+     * @ParamProviders({"entityAmounts"})
      */
-    public function createUserInSingleTransaction(array $params): void
+    public function storeManySingleTransaction(array $params): void
     {
         $seeds = $this->userSeeds->take($params['times']);
 
@@ -72,7 +58,7 @@ abstract class UserWithoutProfilePersist extends Benchmark
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
         foreach ($seeds as $seed) {
-            $entity = $entityFactory->create($seeds->getClass());
+            $entity = new User();
             $user = $entityFactory->hydrate($entity, $seed);
             $entityFactory->store($user);
         }
@@ -80,14 +66,11 @@ abstract class UserWithoutProfilePersist extends Benchmark
         $this->runCallbacks($entityFactory->afterCreationCallbacks());
     }
 
-    public function userAmounts(): \Generator
-    {
-        yield 'five records' => ['times' => 5];
-        yield 'ten records' => ['times' => 10];
-    }
-
     public function getSchema(string $mapper): array
     {
-        return (new UserSchema($mapper))->toArray();
+        return SchemaFactory::create(
+            $mapper,
+            new UserSchema()
+        )->toArray();
     }
 }

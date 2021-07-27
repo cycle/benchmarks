@@ -5,9 +5,9 @@ namespace Cycle\Benchmarks\Base\Entites;
 
 class Comment
 {
-    private int $id;
-    private string $text;
-    private $user;
+    public $id;
+    public string $text;
+    public $user;
 
     public function setUser($user)
     {

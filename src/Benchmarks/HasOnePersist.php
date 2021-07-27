@@ -4,31 +4,42 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\Benchmarks;
 
 use Butschster\EntityFaker\Seeds\Seeds;
-use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
+use Cycle\Benchmarks\Base\Entites\User;
+use Cycle\Benchmarks\Base\Entites\UserProfile;
+use Cycle\Benchmarks\Base\Schemas\SchemaFactory;
 use Cycle\Benchmarks\Base\Schemas\UserProfileSchema;
 use Cycle\Benchmarks\Base\Schemas\UserSchema;
-use Generator;
 
 /**
  * @method UserConfigurator getConfigurator()
  */
-abstract class UserWithProfilePersist extends UserWithProfileSelect
+abstract class HasOnePersist extends DatabaseBenchmark
 {
     public Seeds $userSeeds;
     public Seeds $profileSeeds;
+
+    public function setUp(array $bindings = []): void
+    {
+        parent::setUp($bindings);
+
+        $this->userSeeds = $this->getConfigurator()->getUserSeeds();
+        $this->profileSeeds = $this->getConfigurator()->getUserProfileSeeds();
+    }
 
     /**
      * @Subject
      * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
+     * @Revs(300)
+     * @Iterations(3)
      */
-    public function createUserWithProfile(): void
+    public function store(): void
     {
         $entityFactory = $this->getEntityFactory();
-        $entity = $entityFactory->create($this->userSeeds->getClass());
-        $profileEntity = $entityFactory->create($this->profileSeeds->getClass());
+        $entity = new User();
+        $profileEntity = new UserProfile();
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
@@ -49,32 +60,11 @@ abstract class UserWithProfilePersist extends UserWithProfileSelect
      * @Groups({"persist"})
      * @BeforeMethods("setUp")
      * @AfterMethods("tearDown")
+     * @ParamProviders({"entityAmounts"})
+     * @Revs(300)
+     * @Iterations(3)
      */
-    public function createUserWithExistsProfile(): void
-    {
-        $entityFactory = $this->getEntityFactory();
-        $entity = $entityFactory->create($this->userSeeds->getClass());
-
-        $profile = $this
-            ->getConfigurator()
-            ->getUserProfileRepository()
-            ->findByPK(234);
-
-        $this->runCallbacks($entityFactory->beforeCreationCallbacks());
-        $user = $entityFactory->hydrate($entity, $this->userSeeds->first());
-        $user->setProfile($profile);
-        $entityFactory->store($entity);
-        $this->runCallbacks($entityFactory->afterCreationCallbacks());
-    }
-
-    /**
-     * @Subject
-     * @Groups({"persist"})
-     * @BeforeMethods("setUp")
-     * @AfterMethods("tearDown")
-     * @ParamProviders({"userAmounts"})
-     */
-    public function createUserWithProfileSingleTransaction(array $params): void
+    public function storeManySingleTransaction(array $params): void
     {
         $userSeeds = $this->userSeeds->take($params['times']);
         $entityFactory = $this->getEntityFactory();
@@ -82,10 +72,10 @@ abstract class UserWithProfilePersist extends UserWithProfileSelect
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
 
         foreach ($userSeeds as $seed) {
-            $entity = $entityFactory->create($userSeeds->getClass());
+            $entity = new User();
             $user = $entityFactory->hydrate($entity, $seed);
 
-            $profileEntity = $entityFactory->create($this->profileSeeds->getClass());
+            $profileEntity = new UserProfile();
             $profile = $entityFactory->hydrate(
                 $profileEntity,
                 $this->profileSeeds->random()->first()
@@ -98,9 +88,12 @@ abstract class UserWithProfilePersist extends UserWithProfileSelect
         $this->runCallbacks($entityFactory->afterCreationCallbacks());
     }
 
-    public function userAmounts(): Generator
+    public function getSchema(string $mapper): array
     {
-        yield 'five records' => ['times' => 5];
-        yield 'ten records' => ['times' => 10];
+        return SchemaFactory::create(
+            $mapper,
+            (new UserSchema())->withProfileRelation(),
+            (new UserProfileSchema())->withUserRelation()
+        )->toArray();
     }
 }

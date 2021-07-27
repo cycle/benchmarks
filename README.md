@@ -58,19 +58,17 @@ return [
         'bindings' => [
             \Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface::class => \Cycle\Benchmarks\Base\DatabaseDrivers\SqliteDriver::class,
             \Butschster\EntityFaker\EntityFactoryInterface::class => \Cycle\Benchmarks\Base\EntityFactory\CycleORMV1EntityFactory::class,
+            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper',
         ],
         'benchmarks' => [
-            // Бенчмарки группируются по мапперам
-            'Cycle\ORM\Mapper\Mapper' => [
-                \Cycle\Benchmarks\Base\Benchmarks\UserWithProfilePersist::class => [
-                    // Bindings for specific benchmarks
-                    \Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface::class => \Cycle\Benchmarks\Base\DatabaseDrivers\NullDriver::class,
-                ],
-                \Cycle\Benchmarks\Base\Benchmarks\UserWithoutProfilePersist::class,
-                \Cycle\Benchmarks\Base\Benchmarks\UserWithoutProfileSelect::class,
-                \Cycle\Benchmarks\Base\Benchmarks\UserWithCommentsPersist::class,
-                \Cycle\Benchmarks\Base\Benchmarks\UserWithCommentsSelect::class
-            ]
+            \Cycle\Benchmarks\Base\Benchmarks\HasOnePersist::class => [
+                // Bindings for specific benchmarks
+                \Cycle\Benchmarks\Base\DatabaseDrivers\DriverInterface::class => \Cycle\Benchmarks\Base\DatabaseDrivers\NullDriver::class,
+            ],
+            \Cycle\Benchmarks\Base\Benchmarks\SingleEntityPersist::class,
+            \Cycle\Benchmarks\Base\Benchmarks\SingleEntitySelect::class,
+            \Cycle\Benchmarks\Base\Benchmarks\HasManyPersist::class,
+            \Cycle\Benchmarks\Base\Benchmarks\HasManySelect::class
         ],
     ]
 ];

@@ -3,42 +3,45 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Schemas;
 
-use Cycle\Benchmarks\Base\Entites\Comment;
+use Cycle\Benchmarks\Base\Entites\Tag;
+use Cycle\Benchmarks\Base\Entites\TagContext;
 use Cycle\Benchmarks\Base\Entites\User;
-use Cycle\Benchmarks\Base\Repositories\CommentRepository;
+use Cycle\Benchmarks\Base\Repositories\TagRepository;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 
-class CommentSchema implements SchemaInterface
+class TagSchema implements SchemaInterface
 {
     protected array $schema = [
-        Schema::ROLE => 'comment',
-        Schema::REPOSITORY => CommentRepository::class,
+        Schema::ROLE => 'tag',
         Schema::DATABASE => 'default',
-        Schema::TABLE => 'comment',
+        Schema::REPOSITORY => TagRepository::class,
+        Schema::TABLE => 'tag',
         Schema::PRIMARY_KEY => 'id',
-        Schema::COLUMNS => ['id', 'text', 'user_id'],
+        Schema::COLUMNS => ['id', 'name'],
         Schema::TYPECAST => [
-            'id' => 'int',
-            'user_id' => 'int'
+            'id' => 'int'
         ],
         Schema::SCHEMA => [],
         Schema::RELATIONS => [],
     ];
 
-    public function __construct(private string $key = Comment::class)
+    public function __construct(private string $key = Tag::class)
     {
     }
 
-    public function withUserRelation(bool $cascade = true): self
+    public function withUsersRelation(bool $cascade = true): self
     {
-        $this->schema[Schema::RELATIONS]['user'] = [
-            Relation::TYPE => Relation::BELONGS_TO,
+        $this->schema[Schema::RELATIONS]['users'] = [
+            Relation::TYPE => Relation::MANY_TO_MANY,
             Relation::TARGET => User::class,
             Relation::SCHEMA => [
                 Relation::CASCADE => $cascade,
-                Relation::INNER_KEY => 'user_id',
+                Relation::THROUGH_ENTITY => TagContext::class,
+                Relation::INNER_KEY => 'id',
                 Relation::OUTER_KEY => 'id',
+                Relation::THROUGH_OUTER_KEY => 'user_id',
+                Relation::THROUGH_INNER_KEY => 'tag_id',
             ],
         ];
 

@@ -6,21 +6,9 @@
     "report.generators": {
         "grouped": {
             "generator": "expression",
-            "cols": [
-                "benchmark",
-                "subject",
-                "tag",
-                "revs",
-                "its",
-                "mem_peak",
-                "mean",
-                "best",
-                "worst",
-                "rstdev",
-                "set"
-            ],
+            "cols": ["benchmark", "subject", "tag", "set", "mem_peak", "best", "worst", "mean", "rstdev", "revs", "its"],
             "break": [
-                "benchmark", "subject", "set"
+                "benchmark", "subject"
             ]
         },
         "chart": {

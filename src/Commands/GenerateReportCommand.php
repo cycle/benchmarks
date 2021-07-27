@@ -39,23 +39,29 @@ class GenerateReportCommand extends Command
             new ArrayInput($args)
         );
 
+        $projects = $input->getArgument('projects');
+        $id = $input->getOption('id');
+
         $reports = $container->get(ReportManager::class);
-
         $xml = $container->get(XmlDriver::class);
-
         $collection = new SuiteCollection();
 
         foreach ($this->projectFinder as $projectName => $projectDir) {
+
+            if (!in_array($projectName, $projects)) {
+                continue;
+            }
+
             $reflection = new ReflectionClass($xml);
             $property = $reflection->getProperty('path');
             $property->setAccessible(true);
 
-            $property->setValue($xml, $projectDir . DIRECTORY_SEPARATOR . '.phpbench' . DIRECTORY_SEPARATOR . 'storage');
+            $property->setValue($xml, $path = $projectDir . DIRECTORY_SEPARATOR . '.phpbench' . DIRECTORY_SEPARATOR . 'storage');
 
             try {
-                $reportId = $container->get(UuidResolver::class)->resolve($input->getArgument('id'));
+                $reportId = $container->get(UuidResolver::class)->resolve($id);
             } catch (\Throwable $e) {
-                $output->writeln('<error>Report id not found</error>');
+                $output->writeln("<error>Report id {$id} for project {$projectName} not found</error>");
                 return Command::INVALID;
             }
 
@@ -69,11 +75,17 @@ class GenerateReportCommand extends Command
         return Command::SUCCESS;
     }
 
+    protected function getProjects(): array
+    {
+        return array_keys(iterator_to_array($this->projectFinder->find()));
+    }
+
     protected function configure(): void
     {
         $this->setDescription('Generate benchmark report');
         $this
-            ->addArgument('id', InputArgument::OPTIONAL, 'Report ID', 'latest')
-            ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Config file', 'phpbench.json');
+            ->addOption('id', null, InputOption::VALUE_OPTIONAL, 'Report ID', 'latest')
+            ->addOption('config', 'c', InputOption::VALUE_OPTIONAL, 'Config file', 'phpbench.json')
+            ->addArgument('projects', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Projects to bench', $this->getProjects());
     }
 }

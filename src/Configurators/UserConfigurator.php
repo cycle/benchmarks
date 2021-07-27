@@ -7,48 +7,72 @@ namespace Cycle\Benchmarks\Base\Configurators;
 use Butschster\EntityFaker\Factory;
 use Butschster\EntityFaker\Seeds\Seeds;
 use Cycle\Benchmarks\Base\Entites\Comment;
+use Cycle\Benchmarks\Base\Entites\ProfileNested;
+use Cycle\Benchmarks\Base\Entites\Tag;
+use Cycle\Benchmarks\Base\Entites\TagContext;
 use Cycle\Benchmarks\Base\Entites\UserProfile;
 use Cycle\Benchmarks\Base\Entites\User;
 use Cycle\Benchmarks\Base\Repositories\CommentRepository;
+use Cycle\Benchmarks\Base\Repositories\TagRepository;
 use Cycle\Benchmarks\Base\Repositories\UserProfileRepository;
 use Cycle\Benchmarks\Base\Repositories\UserRepository;
-use Cycle\ORM\Mapper\Mapper;
-use Cycle\ORM\Relation;
-use Cycle\ORM\Schema;
-use Doctrine\Common\Collections\ArrayCollection;
+use Cycle\ORM\Select\Repository;
 use Faker\Generator;
 
 class UserConfigurator extends AbstractConfigurator
 {
     public function createTables(): void
     {
-        $this->getDriver()->createTable('user', ['id' => 'integer', 'username' => 'string', 'email' => 'string'], [], []);
-        $this->getDriver()->createTable('profile', ['id' => 'integer', 'fullName' => 'string', 'user_id' => 'integer'], [], []);
-        $this->getDriver()->createTable('comment', ['id' => 'integer', 'text' => 'string', 'user_id' => 'integer'], [], []);
+        $this->getDriver()
+            ->createTable('user', columns: ['id' => 'primary', 'username' => 'string', 'email' => 'string'])
+            ->createTable('tags', columns: ['id' => 'primary', 'name' => 'string'],)
+            ->createTable('tag_user_map', columns: ['id' => 'primary', 'user_id' => 'integer', 'tag_id' => 'integer', 'as' => 'string,nullable'],)
+            ->makeFK('tag_user_map', 'user_id', 'user', 'id')
+            ->makeFK('tag_user_map', 'tag_id', 'tags', 'id')
+            ->createTable('profile', columns: ['id' => 'primary', 'fullName' => 'string', 'user_id' => 'integer'],)
+            ->makeFK('profile', 'user_id', 'user', 'id')
+            ->createTable('nested', columns: ['id' => 'primary', 'label' => 'string', 'profile_id' => 'integer'],)
+            ->makeFK('nested', 'profile_id', 'profile', 'id')
+            ->createTable('comment', columns: ['id' => 'primary', 'text' => 'string', 'user_id' => 'integer'],)
+            ->makeFK('comment', 'user_id', 'user', 'id');
     }
 
     public function defineEntities(Factory $factory): void
     {
         $factory->define(User::class, function (Generator $faker, array $attributes) {
             return [
-                'id' => $faker->numberBetween(1, 10000),
                 'username' => $faker->userName,
                 'email' => $faker->email,
-                'comments' => new ArrayCollection()
             ];
         });
 
         $factory->define(UserProfile::class, function (Generator $faker, array $attributes) {
             return [
-                'id' => $faker->numberBetween(1, 10000),
                 'fullName' => $faker->firstName . ' ' . $faker->lastName
+            ];
+        });
+
+        $factory->define(ProfileNested::class, function (Generator $faker, array $attributes) {
+            return [
+                'label' => $faker->word
             ];
         });
 
         $this->getFactory()->define(Comment::class, function (Generator $faker, array $attributes) {
             return [
-                'id' => $faker->numberBetween(1, 10000),
                 'text' => $faker->text
+            ];
+        });
+
+        $this->getFactory()->define(Tag::class, function (Generator $faker, array $attributes) {
+            return [
+                'name' => $faker->word
+            ];
+        });
+
+        $this->getFactory()->define(TagContext::class, function (Generator $faker, array $attributes) {
+            return [
+                'as' => $faker->randomElement(['primary', 'secondary'])
             ];
         });
     }
@@ -63,9 +87,29 @@ class UserConfigurator extends AbstractConfigurator
         return $this->getDriver()->getRepository($role);
     }
 
+    public function getProfileNestedRepository(string $role = ProfileNested::class): Repository
+    {
+        return $this->getDriver()->getRepository($role);
+    }
+
     public function getCommentRepository(string $role = Comment::class): CommentRepository
     {
         return $this->getDriver()->getRepository($role);
+    }
+
+    public function geTagRepository(string $role = Tag::class): TagRepository
+    {
+        return $this->getDriver()->getRepository($role);
+    }
+
+    public function getTagSeeds(): Seeds
+    {
+        return $this->getSeeds()->get(Tag::class);
+    }
+
+    public function getTagContextSeeds(): Seeds
+    {
+        return $this->getSeeds()->get(TagContext::class);
     }
 
     public function getUserSeeds(): Seeds
@@ -78,94 +122,13 @@ class UserConfigurator extends AbstractConfigurator
         return $this->getSeeds()->get(UserProfile::class);
     }
 
+    public function getProfileNestedSeeds(): Seeds
+    {
+        return $this->getSeeds()->get(ProfileNested::class);
+    }
+
     public function getCommentSeeds(): Seeds
     {
         return $this->getSeeds()->get(Comment::class);
-    }
-
-    public function getSchema(): array
-    {
-        return [
-            User::class => [
-                Schema::MAPPER => Mapper::class,
-                Schema::DATABASE => 'default',
-                Schema::REPOSITORY => UserRepository::class,
-                Schema::TABLE => 'user',
-                Schema::PRIMARY_KEY => 'id',
-                Schema::COLUMNS => ['id', 'username', 'email'],
-                Schema::TYPECAST => [
-                    'id' => 'int'
-                ],
-                Schema::SCHEMA => [],
-                Schema::RELATIONS => [
-                    'profile' => [
-                        Relation::TYPE => Relation::HAS_ONE,
-                        Relation::TARGET => UserProfile::class,
-                        Relation::SCHEMA => [
-                            Relation::CASCADE => true,
-                            Relation::INNER_KEY => 'id',
-                            Relation::OUTER_KEY => 'user_id',
-                        ],
-                    ],
-                    'comments' => [
-                        Relation::TYPE => Relation::HAS_MANY,
-                        Relation::TARGET => Comment::class,
-                        Relation::SCHEMA => [
-                            Relation::CASCADE => true,
-                            Relation::INNER_KEY => 'id',
-                            Relation::OUTER_KEY => 'user_id',
-                        ],
-                    ]
-                ],
-            ],
-            UserProfile::class => [
-                Schema::MAPPER => Mapper::class,
-                Schema::REPOSITORY => UserProfileRepository::class,
-                Schema::DATABASE => 'default',
-                Schema::TABLE => 'profile',
-                Schema::PRIMARY_KEY => 'id',
-                Schema::COLUMNS => ['id', 'fullName', 'user_id'],
-                Schema::TYPECAST => [
-                    'id' => 'int',
-                    'user_id' => 'int'
-                ],
-                Schema::SCHEMA => [],
-                Schema::RELATIONS => [
-                    'user' => [
-                        Relation::TYPE => Relation::BELONGS_TO,
-                        Relation::TARGET => User::class,
-                        Relation::SCHEMA => [
-                            Relation::CASCADE => true,
-                            Relation::INNER_KEY => 'user_id',
-                            Relation::OUTER_KEY => 'id',
-                        ],
-                    ]
-                ]
-            ],
-            Comment::class => [
-                Schema::MAPPER => Mapper::class,
-                Schema::REPOSITORY => CommentRepository::class,
-                Schema::DATABASE => 'default',
-                Schema::TABLE => 'comment',
-                Schema::PRIMARY_KEY => 'id',
-                Schema::COLUMNS => ['id', 'text', 'user_id'],
-                Schema::TYPECAST => [
-                    'id' => 'int',
-                    'user_id' => 'int'
-                ],
-                Schema::SCHEMA => [],
-                Schema::RELATIONS => [
-                    'user' => [
-                        Relation::TYPE => Relation::BELONGS_TO,
-                        Relation::TARGET => User::class,
-                        Relation::SCHEMA => [
-                            Relation::CASCADE => true,
-                            Relation::INNER_KEY => 'user_id',
-                            Relation::OUTER_KEY => 'id',
-                        ],
-                    ]
-                ]
-            ]
-        ];
     }
 }

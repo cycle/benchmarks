@@ -15,6 +15,7 @@ use Spiral\Database\Database;
 use Spiral\Database\DatabaseInterface;
 use Spiral\Database\DatabaseManager;
 use Spiral\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
+use Spiral\Database\ForeignKeyInterface;
 
 class NullDriver extends AbstractDriver
 {
@@ -41,14 +42,19 @@ class NullDriver extends AbstractDriver
         return new \Cycle\ORM\ORM(new Factory($this->dbal, RelationConfig::getDefault()));
     }
 
-    public function createTable(string $table, array $columns, array $fk = [], array $pk = null, array $defaults = []): void
+    public function createTable(string $table, array $columns, array $fk = [], array $pk = null, array $defaults = []): self
     {
-
+        return $this;
     }
 
-    public function insertTableRows(string $table, array $columns = [], array $rowsets = []): void
+    public function insertTableRows(string $table, array $columns = [], array $rowsets = [], bool $truncate = true): self
     {
+        return $this;
+    }
 
+    public function makeFK(string $from, string $fromKey, string $to, string $toColumn, string $onDelete = ForeignKeyInterface::CASCADE, string $onUpdate = ForeignKeyInterface::CASCADE): DriverInterface
+    {
+        return $this;
     }
 
     public function getRepository(string $entity): RepositoryInterface

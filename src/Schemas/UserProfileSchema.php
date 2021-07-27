@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Schemas;
 
+use Cycle\Benchmarks\Base\Entites\ProfileNested;
 use Cycle\Benchmarks\Base\Entites\User;
 use Cycle\Benchmarks\Base\Entites\UserProfile;
 use Cycle\Benchmarks\Base\Repositories\UserProfileRepository;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 
-class UserProfileSchema
+class UserProfileSchema implements SchemaInterface
 {
     protected array $schema = [
         Schema::ROLE => 'user_profile',
@@ -26,20 +27,34 @@ class UserProfileSchema
         Schema::RELATIONS => [],
     ];
 
-    public function __construct(string $mapper, private string $key = UserProfile::class)
+    public function __construct(private string $key = UserProfile::class)
     {
-        $this->schema[Schema::MAPPER] = $mapper;
     }
 
-    public function withUserRelation(): self
+    public function withUserRelation(bool $cascade = true): self
     {
         $this->schema[Schema::RELATIONS]['user'] = [
             Relation::TYPE => Relation::BELONGS_TO,
             Relation::TARGET => User::class,
             Relation::SCHEMA => [
-                Relation::CASCADE => true,
+                Relation::CASCADE => $cascade,
                 Relation::INNER_KEY => 'user_id',
                 Relation::OUTER_KEY => 'id',
+            ],
+        ];
+
+        return $this;
+    }
+
+    public function withNestedRelation(bool $cascade = true): self
+    {
+        $this->schema[Schema::RELATIONS]['nested'] = [
+            Relation::TYPE => Relation::HAS_ONE,
+            Relation::TARGET => ProfileNested::class,
+            Relation::SCHEMA => [
+                Relation::CASCADE => $cascade,
+                Relation::INNER_KEY => 'id',
+                Relation::OUTER_KEY => 'profile_id',
             ],
         ];
 
@@ -51,5 +66,10 @@ class UserProfileSchema
         return [
             $this->key => $this->schema
         ];
+    }
+
+    public function setMapper(string $mapper): void
+    {
+        $this->schema[Schema::MAPPER] = $mapper;
     }
 }

@@ -14,14 +14,14 @@ class LoggerExtension implements ExtensionInterface
 {
     public function load(Container $container): void
     {
-        $container->register(DotsLogger::class . '.show', function (Container $container) {
-            return new DotsLogger(
+        $container->register(ProgressBarLogger::class, function (Container $container) {
+            return new ProgressBarLogger(
                 $container->get(ConsoleExtension::SERVICE_OUTPUT_ERR),
                 $container->get(VariantFormatter::class),
                 new TimeUnit(
                     TimeUnit::MILLISECONDS,
                     TimeUnit::MILLISECONDS,
-                    TimeUnit::MODE_TIME,
+                    TimeUnit::AUTO,
                     1
                 ),
                 true
@@ -32,7 +32,7 @@ class LoggerExtension implements ExtensionInterface
     public function configure(OptionsResolver $resolver): void
     {
         if (!defined('ROOT')) {
-            define('ROOT', __DIR__ . '/../..');
+            define('ROOT', __DIR__ . '/../../..');
         }
     }
 }

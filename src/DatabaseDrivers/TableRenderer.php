@@ -50,8 +50,10 @@ final class TableRenderer
                 $primaryKeys[] = $name;
             }
 
+            $column = $table->column($name);
+
             $this->renderColumn(
-                $table->column($name),
+                $column,
                 $type,
                 array_key_exists($name, $defaults),
                 $defaults[$name] ?? null

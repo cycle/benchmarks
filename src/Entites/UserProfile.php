@@ -5,12 +5,24 @@ namespace Cycle\Benchmarks\Base\Entites;
 
 class UserProfile
 {
-    private int $id;
-    private $user = null;
-    private string $fullName;
+    public $id;
+
+    /** @var User */
+    public $user = null;
+
+    /** @var ProfileNested */
+    public $nested;
+
+    public string $fullName;
 
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    public function setNested($nested)
+    {
+        $this->nested = $nested;
+        $nested->setProfile($this);
     }
 }

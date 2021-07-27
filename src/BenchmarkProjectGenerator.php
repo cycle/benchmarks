@@ -23,22 +23,18 @@ class BenchmarkProjectGenerator
 
         $generator = new BenchmarkGenerator($projectDir);
 
-        foreach ($config['benchmarks'] as $mapper => $benchmarks) {
-            $bindings = $config['bindings'] ?? [];
+        $bindings = $config['bindings'] ?? [];
 
-            foreach ($benchmarks as $key => $benchmark) {
-                if (is_string($key)) {
-                    $bindings = array_merge($bindings, $benchmark);
-                    $benchmark = $key;
-                }
+        foreach ($config['benchmarks'] as $key => $benchmark) {
+            if (is_string($key)) {
+                $bindings = array_merge($bindings, $benchmark);
+                $benchmark = $key;
+            }
 
-                $bindings['Cycle\ORM\MapperInterface'] = $mapper;
+            $benchmark = $generator->generate($project, $benchmark, $bindings, $config['namespace'] ?? 'Benchmarks');
 
-                $benchmark = $generator->generate($project, $mapper, $benchmark, $bindings, $config['namespace'] ?? 'Benchmarks');
-
-                if ($benchmark->store($override)) {
-                    $this->output->writeln('<info>Benchmark ' . $benchmark->getFilePatch() . ' generated</info>');
-                }
+            if ($benchmark->store($override)) {
+                $this->output->writeln('<info>Benchmark ' . $benchmark->getFilePatch() . ' generated</info>');
             }
         }
 

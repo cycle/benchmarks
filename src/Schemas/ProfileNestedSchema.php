@@ -3,41 +3,38 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Schemas;
 
-use Cycle\Benchmarks\Base\Entites\Comment;
-use Cycle\Benchmarks\Base\Entites\User;
-use Cycle\Benchmarks\Base\Repositories\CommentRepository;
+use Cycle\Benchmarks\Base\Entites\ProfileNested;
+use Cycle\Benchmarks\Base\Entites\UserProfile;
 use Cycle\ORM\Relation;
 use Cycle\ORM\Schema;
 
-class CommentSchema implements SchemaInterface
+class ProfileNestedSchema implements SchemaInterface
 {
     protected array $schema = [
-        Schema::ROLE => 'comment',
-        Schema::REPOSITORY => CommentRepository::class,
+        Schema::ROLE => 'nested',
         Schema::DATABASE => 'default',
-        Schema::TABLE => 'comment',
+        Schema::TABLE => 'nested',
         Schema::PRIMARY_KEY => 'id',
-        Schema::COLUMNS => ['id', 'text', 'user_id'],
+        Schema::COLUMNS => ['id', 'nested', 'label'],
         Schema::TYPECAST => [
-            'id' => 'int',
-            'user_id' => 'int'
+            'id' => 'int'
         ],
         Schema::SCHEMA => [],
         Schema::RELATIONS => [],
     ];
 
-    public function __construct(private string $key = Comment::class)
+    public function __construct(private string $key = ProfileNested::class)
     {
     }
 
-    public function withUserRelation(bool $cascade = true): self
+    public function withProfileRelation(bool $cascade = true): self
     {
-        $this->schema[Schema::RELATIONS]['user'] = [
+        $this->schema[Schema::RELATIONS]['profile'] = [
             Relation::TYPE => Relation::BELONGS_TO,
-            Relation::TARGET => User::class,
+            Relation::TARGET => UserProfile::class,
             Relation::SCHEMA => [
                 Relation::CASCADE => $cascade,
-                Relation::INNER_KEY => 'user_id',
+                Relation::INNER_KEY => 'profile_id',
                 Relation::OUTER_KEY => 'id',
             ],
         ];

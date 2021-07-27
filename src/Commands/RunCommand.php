@@ -46,6 +46,10 @@ class RunCommand extends Command
             : new PhpBenchPackageStrategy();
 
         foreach ($this->projectFinder as $projectName => $projectDir) {
+            if (!in_array($projectName, $projects)) {
+                continue;
+            }
+
             $project = 'benchmarks' . DIRECTORY_SEPARATOR . $projectName;
 
             $this->runComposerCommands($projectDir, $output);
@@ -55,9 +59,14 @@ class RunCommand extends Command
             );
         }
 
+        $output->writeln('');
+
         $this->getApplication()
             ->find('report')
-            ->run(new ArrayInput(['id' => $suiteUuid,]), $output);
+            ->run(new ArrayInput([
+                '--id' => $suiteUuid,
+                'projects' => $projects
+            ]), $output);
 
         $output->writeln("Use command <info>php bench report $suiteUuid</info> to show this report");
 
