@@ -20,6 +20,7 @@ $benchmarks = [
     Benchmarks\HasManyPersist::class => $userConfigurator,
     Benchmarks\HasManySelect::class => $userConfigurator,
     Benchmarks\ManyToManyPersist::class => $userConfigurator,
+    Benchmarks\ManyToManyPersistBackRelations::class => $userConfigurator,
     Benchmarks\Hydrator::class => $userConfigurator,
 ];
 
@@ -35,6 +36,7 @@ return [
         ],
         'benchmarks' => $benchmarks,
     ],
+    // Laminas Reflection hydrator
     'v2refhyd' => [
         'require' => [
             'cycle/orm' => 'dev-master#a47e3aa2d91a7e7bf2850f58d322391510fc2eba'

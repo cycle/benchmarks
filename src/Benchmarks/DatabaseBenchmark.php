@@ -60,8 +60,8 @@ abstract class DatabaseBenchmark extends Benchmark
 
     public function entityAmounts(): Generator
     {
-        yield 'five records' => ['times' => 5];
-        yield 'ten records' => ['times' => 10];
+        yield 'Amount:5' => ['times' => 5];
+        yield 'Amount:10' => ['times' => 10];
     }
 
     public function relationLoadType(): Generator

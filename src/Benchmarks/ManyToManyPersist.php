@@ -11,6 +11,7 @@ use Cycle\Benchmarks\Base\Schemas\SchemaFactory;
 use Cycle\Benchmarks\Base\Schemas\TagContextSchema;
 use Cycle\Benchmarks\Base\Schemas\TagSchema;
 use Cycle\Benchmarks\Base\Schemas\UserSchema;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @method UserConfigurator getConfigurator()
@@ -59,21 +60,24 @@ abstract class ManyToManyPersist extends DatabaseBenchmark
      * @AfterMethods("tearDown")
      * @ParamProviders({"entityAmounts"})
      */
-    public function createUserWithTag(array $params): void
+    public function createUsersWithCommonTags(array $params): void
     {
         $entityFactory = $this->getEntityFactory();
 
-        $entity = new User();
-        $user = $entityFactory->hydrate($entity, $this->userSeeds->first());
-
-        foreach ($this->tagSeeds->take($params['times']) as $seed) {
-            $tagEntity = new Tag();
-            $user->tags->add($entityFactory->hydrate($tagEntity, $seed));
-
-            $this->runCallbacks($entityFactory->beforeCreationCallbacks());
-            $entityFactory->store($user);
-            $this->runCallbacks($entityFactory->afterCreationCallbacks());
+        $tags = new ArrayCollection();
+        foreach ($this->tagSeeds->take($params['times']) as $tagData) {
+            $tags->add($entityFactory->hydrate(new Tag(), $tagData));
         }
+
+        $this->runCallbacks($entityFactory->beforeCreationCallbacks());
+
+        foreach ($this->userSeeds->take($params['times']) as $userData) {
+            /** @var User $user */
+            $user = $entityFactory->hydrate(new User(), $userData);
+            $user->tags = $tags;
+            $entityFactory->store($user);
+        }
+        $this->runCallbacks($entityFactory->afterCreationCallbacks());
     }
 
     public function getSchema(string $mapper): array
