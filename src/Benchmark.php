@@ -20,6 +20,11 @@ class Benchmark
             return false;
         }
 
+        $dir = dirname($this->getFilePatch());
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
         file_put_contents(
             $this->getFilePatch(),
             (new \Nette\PhpGenerator\PsrPrinter)->printFile($this->file)
