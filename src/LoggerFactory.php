@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base;
@@ -12,9 +13,9 @@ class LoggerFactory
 {
     public function __construct(
         private string $logPath,
-        private string $timeFormat = "Y-m-d H:i:s"
-    )
-    {}
+        private string $timeFormat = 'Y-m-d H:i:s'
+    ) {
+    }
 
     public function create(): LoggerInterface
     {

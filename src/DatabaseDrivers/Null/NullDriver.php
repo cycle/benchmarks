@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
@@ -14,6 +15,7 @@ use Throwable;
 class NullDriver extends Driver
 {
     private Generator $faker;
+
     public function __construct(array $options)
     {
         parent::__construct(
@@ -33,12 +35,10 @@ class NullDriver extends Driver
 
     public function connect(): void
     {
-
     }
 
     public function disconnect(): void
     {
-
     }
 
     public function quote($value, int $type = \PDO::PARAM_STR): string

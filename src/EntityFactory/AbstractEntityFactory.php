@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\EntityFactory;
@@ -12,6 +13,7 @@ abstract class AbstractEntityFactory implements EntityFactoryInterface
 
     /**
      * Add a callback to run after creating an entity or array of entities.
+     *
      * @param callable $callback
      */
     public function afterCreation(callable $callback): void
@@ -26,6 +28,7 @@ abstract class AbstractEntityFactory implements EntityFactoryInterface
 
     /**
      * Add a callback to run before creating an entity or array of entities.
+     *
      * @param callable $callback
      */
     public function beforeCreation(callable $callback): void

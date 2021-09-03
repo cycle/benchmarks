@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Schemas;
@@ -20,7 +21,7 @@ class CommentSchema implements SchemaInterface
         Schema::COLUMNS => ['id', 'text', 'user_id'],
         Schema::TYPECAST => [
             'id' => 'int',
-            'user_id' => 'int'
+            'user_id' => 'int',
         ],
         Schema::SCHEMA => [],
         Schema::RELATIONS => [],
@@ -48,7 +49,7 @@ class CommentSchema implements SchemaInterface
     public function toArray(): array
     {
         return [
-            $this->key => $this->schema
+            $this->key => $this->schema,
         ];
     }
 

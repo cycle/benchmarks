@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base;
@@ -10,7 +11,8 @@ use Traversable;
 class ProjectFinder implements \IteratorAggregate
 {
     public function __construct(private string $directory)
-    {}
+    {
+    }
 
     public function find(): Generator
     {

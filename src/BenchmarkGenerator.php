@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base;
@@ -14,12 +15,11 @@ class BenchmarkGenerator
         string $benchmark,
         array $bindings,
         string $namespace
-    ): Benchmark
-    {
+    ): Benchmark {
         $className = $this->getClassName($benchmark);
         $filePath = $this->makeBenchmarkPath($project, $className);
 
-        $file = new \Nette\PhpGenerator\PhpFile;
+        $file = new \Nette\PhpGenerator\PhpFile();
         $file->addComment('This file is auto-generated. ' . date('Y-m-d H:i:s'));
         $file->setStrictTypes();
 

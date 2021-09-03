@@ -25,15 +25,15 @@ class UserConfigurator extends AbstractConfigurator
     {
         $this->getDriver()
             ->createTable('user', columns: ['id' => 'primary', 'username' => 'string', 'email' => 'string'])
-            ->createTable('tags', columns: ['id' => 'primary', 'name' => 'string'],)
-            ->createTable('tag_user_map', columns: ['id' => 'primary', 'user_id' => 'integer', 'tag_id' => 'integer', 'as' => 'string,nullable'],)
+            ->createTable('tags', columns: ['id' => 'primary', 'name' => 'string'], )
+            ->createTable('tag_user_map', columns: ['id' => 'primary', 'user_id' => 'integer', 'tag_id' => 'integer', 'as' => 'string,nullable'], )
             ->makeFK('tag_user_map', 'user_id', 'user', 'id')
             ->makeFK('tag_user_map', 'tag_id', 'tags', 'id')
-            ->createTable('profile', columns: ['id' => 'primary', 'fullName' => 'string', 'user_id' => 'integer'],)
+            ->createTable('profile', columns: ['id' => 'primary', 'fullName' => 'string', 'user_id' => 'integer'], )
             ->makeFK('profile', 'user_id', 'user', 'id')
-            ->createTable('nested', columns: ['id' => 'primary', 'label' => 'string', 'profile_id' => 'integer'],)
+            ->createTable('nested', columns: ['id' => 'primary', 'label' => 'string', 'profile_id' => 'integer'], )
             ->makeFK('nested', 'profile_id', 'profile', 'id')
-            ->createTable('comment', columns: ['id' => 'primary', 'text' => 'string', 'user_id' => 'integer'],)
+            ->createTable('comment', columns: ['id' => 'primary', 'text' => 'string', 'user_id' => 'integer'], )
             ->makeFK('comment', 'user_id', 'user', 'id');
     }
 
@@ -48,31 +48,31 @@ class UserConfigurator extends AbstractConfigurator
 
         $factory->define(UserProfile::class, function (Generator $faker, array $attributes) {
             return [
-                'fullName' => $faker->firstName . ' ' . $faker->lastName
+                'fullName' => $faker->firstName . ' ' . $faker->lastName,
             ];
         });
 
         $factory->define(ProfileNested::class, function (Generator $faker, array $attributes) {
             return [
-                'label' => $faker->word
+                'label' => $faker->word,
             ];
         });
 
         $this->getFactory()->define(Comment::class, function (Generator $faker, array $attributes) {
             return [
-                'text' => $faker->text
+                'text' => $faker->text,
             ];
         });
 
         $this->getFactory()->define(Tag::class, function (Generator $faker, array $attributes) {
             return [
-                'name' => $faker->word
+                'name' => $faker->word,
             ];
         });
 
         $this->getFactory()->define(TagContext::class, function (Generator $faker, array $attributes) {
             return [
-                'as' => $faker->randomElement(['primary', 'secondary'])
+                'as' => $faker->randomElement(['primary', 'secondary']),
             ];
         });
     }

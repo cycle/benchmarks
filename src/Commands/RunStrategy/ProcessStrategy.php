@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands\RunStrategy;
@@ -23,7 +24,7 @@ class ProcessStrategy implements StrategyInterface
             '--config=' . ROOT . DIRECTORY_SEPARATOR . $config,
             '--tag=' . $tag,
             '--store',
-            'benchmarks'
+            'benchmarks',
         ];
 
         if (!empty($filter)) {
@@ -39,7 +40,7 @@ class ProcessStrategy implements StrategyInterface
         }
 
         $process = new Process($args, env: [
-            'SUITE_UUID' => getenv('SUITE_UUID')
+            'SUITE_UUID' => getenv('SUITE_UUID'),
         ]);
 
         $process->start();

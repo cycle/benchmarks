@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\PhpBench\Extensions;
@@ -24,8 +25,7 @@ class ProgressBarLogger extends PhpBenchLogger
         VariantFormatter $formatter,
         TimeUnit $timeUnit,
         private bool $showBench = false
-    )
-    {
+    ) {
         parent::__construct($output, $formatter, $timeUnit);
         $this->progressBar = new ProgressBar($output);
         $this->progressBar->start();
@@ -75,7 +75,7 @@ class ProgressBarLogger extends PhpBenchLogger
         $errorStacks = $suite->getErrorStacks();
         foreach ($errorStacks as $errorStack) {
             $stack = [sprintf(
-                "%s::%s",
+                '%s::%s',
                 $errorStack->getVariant()->getSubject()->getBenchmark()->getClass(),
                 $errorStack->getVariant()->getSubject()->getName()
             )];
@@ -84,7 +84,7 @@ class ProgressBarLogger extends PhpBenchLogger
 
             if ($error) {
                 $stack[] = sprintf(
-                    "%s %s",
+                    '%s %s',
                     $error->getMessage(),
                     $error->getTrace()
                 );
@@ -94,12 +94,12 @@ class ProgressBarLogger extends PhpBenchLogger
         }
     }
 
-
     /**
      * Convert a string to snake case.
      *
      * @param string $value
      * @param string $delimiter
+     *
      * @return string
      */
     public function snake(string $value, string $delimiter = '_')

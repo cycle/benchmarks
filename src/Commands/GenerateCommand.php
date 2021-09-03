@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
@@ -93,7 +94,7 @@ class GenerateCommand extends Command
         }
 
         if ($message) {
-            $output->writeln("<info>Done</info>");
+            $output->writeln('<info>Done</info>');
         }
     }
 

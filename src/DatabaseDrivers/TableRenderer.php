@@ -90,6 +90,7 @@ final class TableRenderer
      * @param mixed $default Default value declared by record schema.
      *
      * @throws SchemaException
+     *
      * @see  AbstractColumn
      */
     protected function renderColumn(AbstractColumn $column, array $type, bool $hasDefault, $default = null): void
@@ -127,7 +128,7 @@ final class TableRenderer
             return;
         }
 
-        if (is_null($default)) {
+        if (null === $default) {
             // default value is stated and NULL, clear what to do
             $column->nullable(true);
         }
@@ -139,6 +140,7 @@ final class TableRenderer
      * @param string $table
      * @param string $column
      * @param string $definition
+     *
      * @return array
      */
     protected function parse(string $table, string $column, string $definition): array
@@ -173,6 +175,7 @@ final class TableRenderer
     /**
      * @param array $type
      * @param string $flag
+     *
      * @return bool
      */
     protected function hasFlag(array $type, string $flag): bool
