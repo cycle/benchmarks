@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands\RunStrategy;
@@ -17,14 +18,14 @@ class PhpBenchPackageStrategy implements StrategyInterface
         $args = [
             'run',
             '--working-dir' => $project,
-            '--bootstrap' => 'bootstrap.php',
-            '--report' => 'aggregate',
-            '--iterations' => [$iterations],
-            '--revs' => [$revolutions],
-            '--config' => ROOT . DIRECTORY_SEPARATOR . $config,
-            '--tag' => $tag,
+            '--bootstrap'   => 'bootstrap.php',
+            '--report'      => 'aggregate',
+            '--iterations'  => [$iterations],
+            '--revs'        => [$revolutions],
+            '--config'      => ROOT.DIRECTORY_SEPARATOR.$config,
+            '--tag'         => $tag,
             '--store',
-            'path' => 'benchmarks'
+            'path' => 'benchmarks',
         ];
 
         if (!empty($filter)) {

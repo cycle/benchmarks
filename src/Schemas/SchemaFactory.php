@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Schemas;
@@ -9,7 +10,7 @@ class SchemaFactory implements SchemaInterface
 
     public static function create(string $mapper, SchemaInterface ...$schemas): self
     {
-        return new self($mapper, ... $schemas);
+        return new self($mapper, ...$schemas);
     }
 
     public function __construct(string $mapper, SchemaInterface ...$schemas)

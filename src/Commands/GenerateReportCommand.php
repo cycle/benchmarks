@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
@@ -24,15 +25,15 @@ class GenerateReportCommand extends Command
 
     public function __construct(string $name = null)
     {
-        $this->projectFinder = new ProjectFinder(ROOT . DIRECTORY_SEPARATOR . 'benchmarks');
+        $this->projectFinder = new ProjectFinder(ROOT.DIRECTORY_SEPARATOR.'benchmarks');
         parent::__construct($name);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $args = [
-            '--config' => ROOT . DIRECTORY_SEPARATOR . $input->getOption('config'),
-            '--report' => 'cycle'
+            '--config' => ROOT.DIRECTORY_SEPARATOR.$input->getOption('config'),
+            '--report' => 'cycle',
         ];
 
         $container = PhpBench::loadContainer(
@@ -47,7 +48,6 @@ class GenerateReportCommand extends Command
         $collection = new SuiteCollection();
 
         foreach ($this->projectFinder as $projectName => $projectDir) {
-
             if (!in_array($projectName, $projects)) {
                 continue;
             }
@@ -56,12 +56,13 @@ class GenerateReportCommand extends Command
             $property = $reflection->getProperty('path');
             $property->setAccessible(true);
 
-            $property->setValue($xml, $path = $projectDir . DIRECTORY_SEPARATOR . '.phpbench' . DIRECTORY_SEPARATOR . 'storage');
+            $property->setValue($xml, $path = $projectDir.DIRECTORY_SEPARATOR.'.phpbench'.DIRECTORY_SEPARATOR.'storage');
 
             try {
                 $reportId = $container->get(UuidResolver::class)->resolve($id);
             } catch (\Throwable $e) {
                 $output->writeln("<error>Report id {$id} for project {$projectName} not found</error>");
+
                 return Command::INVALID;
             }
 
@@ -70,7 +71,7 @@ class GenerateReportCommand extends Command
             );
         }
 
-        $reports->renderReports($collection, ['grouped', /*'chart'*/], ['console']);
+        $reports->renderReports($collection, ['grouped'/*'chart'*/], ['console']);
 
         return Command::SUCCESS;
     }

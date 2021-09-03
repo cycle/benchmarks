@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
@@ -14,7 +15,6 @@ use Spiral\Database\Config\DatabaseConfig;
 use Spiral\Database\Database;
 use Spiral\Database\DatabaseInterface;
 use Spiral\Database\DatabaseManager;
-use Spiral\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
 use Spiral\Database\ForeignKeyInterface;
 
 class NullDriver extends AbstractDriver
@@ -70,7 +70,7 @@ class NullDriver extends AbstractDriver
     public function createEntityFactory(): EntityFactoryInterface
     {
         return $this->container->make(EntityFactoryInterface::class, [
-            'orm' => $this->orm
+            'orm' => $this->orm,
         ]);
     }
 }

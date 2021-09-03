@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
@@ -21,25 +22,25 @@ class RunCommand extends Command
 
     public function __construct(string $name = null)
     {
-        $this->projectFinder = new ProjectFinder(ROOT . DIRECTORY_SEPARATOR . 'benchmarks');
+        $this->projectFinder = new ProjectFinder(ROOT.DIRECTORY_SEPARATOR.'benchmarks');
         parent::__construct($name);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        @unlink(ROOT . DIRECTORY_SEPARATOR . 'runtime' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'phpbench.log');
+        @unlink(ROOT.DIRECTORY_SEPARATOR.'runtime'.DIRECTORY_SEPARATOR.'logs'.DIRECTORY_SEPARATOR.'phpbench.log');
 
-        $suiteUuid = dechex((int)date('Ymd')) . substr(sha1(date('YmdHis')), 0, -7);
+        $suiteUuid = dechex((int) date('Ymd')).substr(sha1(date('YmdHis')), 0, -7);
         putenv("SUITE_UUID=$suiteUuid");
 
         $projects = $input->getArgument('projects');
         $config = $input->getOption('config');
-        $iterations = (int)$input->getOption('iterations');
-        $revolutions = (int)$input->getOption('revolutions');
-        $filter = (array)$input->getOption('filter');
-        $groups = (array)$input->getOption('group');
+        $iterations = (int) $input->getOption('iterations');
+        $revolutions = (int) $input->getOption('revolutions');
+        $filter = (array) $input->getOption('filter');
+        $groups = (array) $input->getOption('group');
 
-        $output->writeln('<info>Run benchmarks to projects: ' . implode(', ', $projects) . '</info>');
+        $output->writeln('<info>Run benchmarks to projects: '.implode(', ', $projects).'</info>');
 
         $strategy = $input->getOption('process')
             ? new ProcessStrategy()
@@ -50,12 +51,18 @@ class RunCommand extends Command
                 continue;
             }
 
-            $project = 'benchmarks' . DIRECTORY_SEPARATOR . $projectName;
+            $project = 'benchmarks'.DIRECTORY_SEPARATOR.$projectName;
 
             $this->runComposerCommands($projectDir, $output);
 
             $strategy->run(
-                $project, $filter, $groups, $config, $iterations, $revolutions, $output
+                $project,
+                $filter,
+                $groups,
+                $config,
+                $iterations,
+                $revolutions,
+                $output
             );
         }
 
@@ -64,8 +71,8 @@ class RunCommand extends Command
         $this->getApplication()
             ->find('report')
             ->run(new ArrayInput([
-                '--id' => $suiteUuid,
-                'projects' => $projects
+                '--id'     => $suiteUuid,
+                'projects' => $projects,
             ]), $output);
 
         $output->writeln("Use command <info>php bench report $suiteUuid</info> to show this report");
@@ -75,7 +82,7 @@ class RunCommand extends Command
 
     protected function runComposerCommands(string $projectDir, OutputInterface $output): void
     {
-        if (!is_dir($projectDir . DIRECTORY_SEPARATOR . 'vendor')) {
+        if (!is_dir($projectDir.DIRECTORY_SEPARATOR.'vendor')) {
             $command = ['composer', 'install'];
             $message = 'Install composer packages';
         } else {

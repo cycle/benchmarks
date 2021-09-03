@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
@@ -20,17 +21,17 @@ class GenerateCommand extends Command
 
     public function __construct(string $name = null)
     {
-        $this->projects = require_once ROOT . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'projects.php';
+        $this->projects = require_once ROOT.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'projects.php';
 
         parent::__construct($name);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->override = (bool)$input->getOption('override');
+        $this->override = (bool) $input->getOption('override');
 
         $projectGenerator = new BenchmarkProjectGenerator(
-            $benchmarksDir = ROOT . DIRECTORY_SEPARATOR . 'benchmarks' . DIRECTORY_SEPARATOR,
+            $benchmarksDir = ROOT.DIRECTORY_SEPARATOR.'benchmarks'.DIRECTORY_SEPARATOR,
             $output
         );
 
@@ -42,7 +43,7 @@ class GenerateCommand extends Command
             }
         }
 
-        $projects = (array)$input->getArgument('projects');
+        $projects = (array) $input->getArgument('projects');
 
         $ignore = ['*', '!.gitignore'];
         foreach ($projects as $project) {
@@ -56,7 +57,7 @@ class GenerateCommand extends Command
             if (str_starts_with($project, '-')) {
                 $project = ltrim($project, '-');
             } else {
-                $ignore[] = '!' . $project;
+                $ignore[] = '!'.$project;
             }
 
             $dir = $projectGenerator->generate($project, $config, $this->override);
@@ -66,14 +67,14 @@ class GenerateCommand extends Command
             }
         }
 
-        file_put_contents($benchmarksDir . '.gitignore', implode(PHP_EOL, $ignore));
+        file_put_contents($benchmarksDir.'.gitignore', implode(PHP_EOL, $ignore));
 
         return Command::SUCCESS;
     }
 
     protected function runComposerCommands(string $projectDir, OutputInterface $output): void
     {
-        if (!is_dir($projectDir . DIRECTORY_SEPARATOR . 'vendor')) {
+        if (!is_dir($projectDir.DIRECTORY_SEPARATOR.'vendor')) {
             $command = ['composer', 'install'];
             $message = 'Install composer packages';
         } else {
@@ -93,7 +94,7 @@ class GenerateCommand extends Command
         }
 
         if ($message) {
-            $output->writeln("<info>Done</info>");
+            $output->writeln('<info>Done</info>');
         }
     }
 

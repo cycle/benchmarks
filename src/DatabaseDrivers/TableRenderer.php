@@ -35,8 +35,8 @@ final class TableRenderer
      * );
      *
      * @param AbstractTable $table
-     * @param array $columns
-     * @param array $defaults
+     * @param array         $columns
+     * @param array         $defaults
      *
      * @throws SchemaException
      */
@@ -85,11 +85,12 @@ final class TableRenderer
      * Attention, column state will be affected!
      *
      * @param AbstractColumn $column
-     * @param array $type
-     * @param bool $hasDefault Must be set to true if default value was set by user.
-     * @param mixed $default Default value declared by record schema.
+     * @param array          $type
+     * @param bool           $hasDefault Must be set to true if default value was set by user.
+     * @param mixed          $default    Default value declared by record schema.
      *
      * @throws SchemaException
+     *
      * @see  AbstractColumn
      */
     protected function renderColumn(AbstractColumn $column, array $type, bool $hasDefault, $default = null): void
@@ -139,6 +140,7 @@ final class TableRenderer
      * @param string $table
      * @param string $column
      * @param string $definition
+     *
      * @return array
      */
     protected function parse(string $table, string $column, string $definition): array
@@ -171,8 +173,9 @@ final class TableRenderer
     }
 
     /**
-     * @param array $type
+     * @param array  $type
      * @param string $flag
+     *
      * @return bool
      */
     protected function hasFlag(array $type, string $flag): bool

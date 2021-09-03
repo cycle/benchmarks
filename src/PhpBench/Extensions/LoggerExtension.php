@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\PhpBench\Extensions;
@@ -32,7 +33,7 @@ class LoggerExtension implements ExtensionInterface
     public function configure(OptionsResolver $resolver): void
     {
         if (!defined('ROOT')) {
-            define('ROOT', __DIR__ . '/../../..');
+            define('ROOT', __DIR__.'/../../..');
         }
     }
 }

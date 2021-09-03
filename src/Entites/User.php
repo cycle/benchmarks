@@ -1,9 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Entites;
 
-use Cycle\ORM\Collection\Pivoted\PivotedCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
