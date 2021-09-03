@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
@@ -55,7 +56,13 @@ class RunCommand extends Command
             $this->runComposerCommands($projectDir, $output);
 
             $strategy->run(
-                $project, $filter, $groups, $config, $iterations, $revolutions, $output
+                $project,
+                $filter,
+                $groups,
+                $config,
+                $iterations,
+                $revolutions,
+                $output
             );
         }
 
@@ -65,7 +72,7 @@ class RunCommand extends Command
             ->find('report')
             ->run(new ArrayInput([
                 '--id' => $suiteUuid,
-                'projects' => $projects
+                'projects' => $projects,
             ]), $output);
 
         $output->writeln("Use command <info>php bench report $suiteUuid</info> to show this report");

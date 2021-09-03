@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
@@ -37,11 +38,6 @@ class NullDriver extends AbstractDriver
         $this->orm = $this->createOrm();
     }
 
-    private function createOrm(): ORMInterface
-    {
-        return new \Cycle\ORM\ORM(new Factory($this->dbal, RelationConfig::getDefault()));
-    }
-
     public function createTable(string $table, array $columns, array $fk = [], array $pk = null, array $defaults = []): self
     {
         return $this;
@@ -70,7 +66,12 @@ class NullDriver extends AbstractDriver
     public function createEntityFactory(): EntityFactoryInterface
     {
         return $this->container->make(EntityFactoryInterface::class, [
-            'orm' => $this->orm
+            'orm' => $this->orm,
         ]);
+    }
+
+    private function createOrm(): ORMInterface
+    {
+        return new \Cycle\ORM\ORM(new Factory($this->dbal, RelationConfig::getDefault()));
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Benchmarks;
@@ -48,7 +49,7 @@ abstract class HasManySelect extends DatabaseBenchmark
                     ['Hello world 222', 2],
                     ['Hello world 3', 3],
                     ['Hello world 33', 3],
-                    ['Hello world1 333', 3]
+                    ['Hello world1 333', 3],
                 ]
             );
     }

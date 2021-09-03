@@ -7,7 +7,7 @@ use Cycle\Benchmarks\Base\EntityFactory;
 use Cycle\Benchmarks\Base\Benchmarks;
 
 $userConfigurator = [
-    Configurators\ConfiguratorInterface::class => Configurators\UserConfigurator::class
+    Configurators\ConfiguratorInterface::class => Configurators\UserConfigurator::class,
 ];
 
 $benchmarks = [
@@ -27,7 +27,7 @@ $benchmarks = [
 return [
     'v1' => [
         'require' => [
-            'cycle/orm' => '^1.5'
+            'cycle/orm' => '^1.5',
         ],
         'bindings' => [
             DatabaseDrivers\DriverInterface::class => DatabaseDrivers\SqliteDriver::class,
@@ -39,34 +39,34 @@ return [
     // Laminas Reflection hydrator
     'v2refhyd' => [
         'require' => [
-            'cycle/orm' => 'dev-master#a47e3aa2d91a7e7bf2850f58d322391510fc2eba'
+            'cycle/orm' => 'dev-master#a47e3aa2d91a7e7bf2850f58d322391510fc2eba',
         ],
         'bindings' => [
             DatabaseDrivers\DriverInterface::class => DatabaseDrivers\SqliteDriver::class,
             EntityFactoryInterface::class => EntityFactory\CycleORMV2EntityFactory::class,
-            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper'
+            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper',
         ],
         'benchmarks' => $benchmarks,
     ],
     'v2' => [
         'require' => [
-            'cycle/orm' => '^2.0.x-dev'
+            'cycle/orm' => '^2.0.x-dev',
         ],
         'bindings' => [
             DatabaseDrivers\DriverInterface::class => DatabaseDrivers\SqliteDriver::class,
             EntityFactoryInterface::class => EntityFactory\CycleORMV2EntityFactory::class,
-            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper'
+            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper',
         ],
         'benchmarks' => $benchmarks,
     ],
     'v2promise' => [
         'require' => [
-            'cycle/orm' => '^2.0.x-dev'
+            'cycle/orm' => '^2.0.x-dev',
         ],
         'bindings' => [
             DatabaseDrivers\DriverInterface::class => DatabaseDrivers\SqliteDriver::class,
             EntityFactoryInterface::class => EntityFactory\CycleORMV2EntityFactory::class,
-            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\PromiseMapper'
+            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\PromiseMapper',
         ],
         'benchmarks' => $benchmarks,
     ],
@@ -74,16 +74,16 @@ return [
         'locked_paths' => [
             'vendor',
             'composer.json',
-            'composer.lock'
+            'composer.lock',
         ],
         'require' => [
-            'cycle/orm' => '^2.0.x-dev'
+            'cycle/orm' => '^2.0.x-dev',
         ],
         'bindings' => [
             DatabaseDrivers\DriverInterface::class => DatabaseDrivers\SqliteDriver::class,
             EntityFactoryInterface::class => EntityFactory\CycleORMV2EntityFactory::class,
-            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper'
+            'Cycle\ORM\MapperInterface' => 'Cycle\ORM\Mapper\Mapper',
         ],
         'benchmarks' => $benchmarks,
-    ]
+    ],
 ];

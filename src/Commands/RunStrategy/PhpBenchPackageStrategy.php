@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands\RunStrategy;
@@ -24,7 +25,7 @@ class PhpBenchPackageStrategy implements StrategyInterface
             '--config' => ROOT . DIRECTORY_SEPARATOR . $config,
             '--tag' => $tag,
             '--store',
-            'path' => 'benchmarks'
+            'path' => 'benchmarks',
         ];
 
         if (!empty($filter)) {

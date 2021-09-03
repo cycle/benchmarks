@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Benchmarks;
@@ -25,7 +26,7 @@ abstract class BelongsToWithHasOneSelect extends DatabaseBenchmark
                 [
                     ['user1', 'user1@site.com'],
                     ['user2', 'user2@site.com'],
-                    ['user3', 'user3@site.com']
+                    ['user3', 'user3@site.com'],
                 ]
             )
             ->insertTableRows(
@@ -34,7 +35,7 @@ abstract class BelongsToWithHasOneSelect extends DatabaseBenchmark
                 [
                     ['John Smith', 1],
                     ['Matthew Perry', 2],
-                    ['Matthew LeBlanc', 3]
+                    ['Matthew LeBlanc', 3],
                 ]
             )
             ->insertTableRows(
@@ -43,7 +44,7 @@ abstract class BelongsToWithHasOneSelect extends DatabaseBenchmark
                 [
                     ['label 1', 1],
                     ['label 2', 1],
-                    ['label 3', 2]
+                    ['label 3', 2],
                 ]
             );
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
@@ -32,7 +33,7 @@ class SqliteDriver extends AbstractDriver
             'username' => 'sqlite',
             'password' => '',
             'options' => [],
-            'queryCache' => true
+            'queryCache' => true,
         ]);
 
         $this->dbal = new DatabaseManager(
@@ -41,11 +42,6 @@ class SqliteDriver extends AbstractDriver
 
         $this->dbal->addDatabase(new Database('default', '', $driver));
         $this->orm = $this->createOrm();
-    }
-
-    private function createOrm(): ORMInterface
-    {
-        return new \Cycle\ORM\ORM(new Factory($this->dbal, RelationConfig::getDefault()));
     }
 
     public function configure(): void
@@ -114,7 +110,12 @@ class SqliteDriver extends AbstractDriver
     public function createEntityFactory(): EntityFactoryInterface
     {
         return $this->container->make(EntityFactoryInterface::class, [
-            'orm' => $this->orm
+            'orm' => $this->orm,
         ]);
+    }
+
+    private function createOrm(): ORMInterface
+    {
+        return new \Cycle\ORM\ORM(new Factory($this->dbal, RelationConfig::getDefault()));
     }
 }

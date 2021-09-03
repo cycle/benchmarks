@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
@@ -33,22 +34,15 @@ class NullDriver extends Driver
 
     public function connect(): void
     {
-
     }
 
     public function disconnect(): void
     {
-
     }
 
     public function quote($value, int $type = \PDO::PARAM_STR): string
     {
         return $value;
-    }
-
-    protected function mapException(Throwable $exception, string $query): StatementException
-    {
-        throw $exception;
     }
 
     public function getType(): string
@@ -74,6 +68,11 @@ class NullDriver extends Driver
     public function rollbackTransaction(): bool
     {
         return true;
+    }
+
+    protected function mapException(Throwable $exception, string $query): StatementException
+    {
+        throw $exception;
     }
 
     protected function statement(
