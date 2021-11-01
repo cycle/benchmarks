@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base;
@@ -27,7 +28,7 @@ class Benchmark
 
         file_put_contents(
             $this->getFilePatch(),
-            (new \Nette\PhpGenerator\PsrPrinter)->printFile($this->file)
+            (new \Nette\PhpGenerator\PsrPrinter())->printFile($this->file)
         );
 
         return true;

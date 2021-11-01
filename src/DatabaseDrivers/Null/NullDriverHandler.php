@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
@@ -9,7 +10,6 @@ use Cycle\Database\Schema\AbstractTable;
 
 class NullDriverHandler extends Handler
 {
-
     public function getTableNames(): array
     {
         return [];

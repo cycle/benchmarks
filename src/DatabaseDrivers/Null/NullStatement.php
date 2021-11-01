@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
@@ -7,7 +8,6 @@ use Cycle\Database\StatementInterface;
 
 class NullStatement implements StatementInterface
 {
-
     public function getQueryString(): string
     {
         return '';

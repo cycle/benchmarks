@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
@@ -13,8 +14,7 @@ abstract class AbstractDriver implements DriverInterface
 
     public function __construct(
         protected Container $container
-    )
-    {
+    ) {
     }
 
     public function configure(): void

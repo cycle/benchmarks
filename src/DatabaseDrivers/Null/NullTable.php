@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
@@ -10,7 +11,6 @@ use Cycle\Database\Schema\AbstractTable;
 
 class NullTable extends AbstractTable
 {
-
     protected function fetchColumns(): array
     {
         return [];

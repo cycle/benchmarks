@@ -1,55 +1,55 @@
 # Benchmark tool for CycleORM
 
-## Запуск бенчмарков
+## Benchmark tool for CycleORM
 
 ```
-// Запуск всех проектов с настройками по умолчанию
+// Run all projects with default settings
 $ php bench run
 
-// Запуск каждого проекта в отдельном процессе (Рекомендуется)
+// Run each project in a separate process (Recommended)
 $ php bench run -p
 
-// Запуск определенного проекта или нескольких проектов
+// Run a specific project or multiple projects
 $ php bench run v1
 $ php bench run v1 v2 
 $ php bench run eloquent8
 
-// Запуск с указанием кол-ва итераций (Переопределяет значение в самом бенчмарке)
+// Run with number of iterations (Overrides the value in the benchmark itself)
 $ php bench run -i 2
 
-// Запуск с указанием кол-ва прогонов каждого субъекта (Переопределяет значение в самом бенчмарке)
+// Run with a number of runs of each subject (Overrides the value in the benchmark itself)
 $ php bench run -r 200
 
-// Фильтрация бенчмарков при запуске
+// Benchmark filtering on startup
 $ php bench run -f 200
 $ php bench run -f benchFoo
 $ php bench run -f HashBench::benchFoo
 $ php bench run -f Hash.*
 
-// Фильтрация бенчмарков по группам при запуске
+// Benchmark filtering by group on startup
 $ php bench run -g select -g persist
 
-// Подмена конфига phpbench
+// phpbench configuration change
 $ php bench run -c phpbench-dev.json
 
-// Параметры запуска можно комбинировать
+// Run parameters can be combined
 $ php bench run -p -r 200 -i 2 -f HashBench::benchFoo -c phpbench-dev.json v1 v2
 ```
 
-## Генерация проектов бенчмарков
+## Benchmark project generation
 
-Генерация проектов производится на основе конфига `config/projects.php`
+Projects are generated based on the `config/projects.php` config
 
 ```php
 return [
-    // Название проекта может начинаться со знака "-", проект будет игнорироваться в .gitignore
+    // Project name can begin with "-", the project will be ignored in .gitignore
     'project_name' => [
-        'boilerplate' => 'default', // Шаблон проекта по умолчанию (optional)
+        'boilerplate' => 'default', // default project template (optional)
         // composer requires
         'require' => [
-            'cycle/orm' => '^1.5'
+            'cycle/orm' => '^1.5'.
         ],
-        'locked_paths' => [ // Файлы и директории которые не нужно удалять при перегенерации (optional)
+        'locked_paths' => [ // files and directories that should not be removed by regeneration (optional)
             'vendor',
             'composer.json',
             'composer.lock'
@@ -74,31 +74,31 @@ return [
 ];
 ```
 
-### Запуск генерации бенчмарков
+### Generate benchmarks
 
 ```
-// Создание проектов и бенчмарков, которые еще не созданы
+// Creation of projects and benchmarks which have not yet been created.
 $ php bench generate
 
-// Все созданные проекты будут перегенерированы заново (Все файлы проекта будут удалены, кроме перечисленных в locked_paths)
+// All generated projects will be generated anew (all files of the project will be deleted, except those listed in the locked_paths)
 $ php bench generate -o
 
-// Генерация только перечисленных проектов
+// Generate only the listed projects
 $ php bench generate v1 v2
 ```
 
-### Просмотр отчетов
+### View reports
 
 ```
-// Получение отчета последнего запуска
+// Retrieve last run report
 $ php bench report
 $ php bench report latest
 
-// Получение предыдущеного отчета относительно текущего
+// Retrieve the previous report relative to the current one
 $ php bench report latest-1
-$ php bench report latest-2
-$ php bench report latest-n
+$ php php bench report latest-2
+$ php php bench report latest-n
 
-// Получение отчета по ID
+// Retrieve report by ID
 $ php bench report 1346426b575f15ce2a67562db9170e9fb54f3ec6
 ```

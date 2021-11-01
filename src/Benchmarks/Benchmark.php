@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Benchmarks;
@@ -23,7 +24,6 @@ abstract class Benchmark
 
     public function tearDown(): void
     {
-
     }
 
     public function getContainer(): Container

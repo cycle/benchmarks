@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Commands;
@@ -32,7 +33,7 @@ class GenerateReportCommand extends Command
     {
         $args = [
             '--config' => ROOT . DIRECTORY_SEPARATOR . $input->getOption('config'),
-            '--report' => 'cycle'
+            '--report' => 'cycle',
         ];
 
         $container = PhpBench::loadContainer(
@@ -47,7 +48,6 @@ class GenerateReportCommand extends Command
         $collection = new SuiteCollection();
 
         foreach ($this->projectFinder as $projectName => $projectDir) {
-
             if (!in_array($projectName, $projects)) {
                 continue;
             }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base;
@@ -67,10 +68,10 @@ class BenchmarkProjectGenerator
         $this->output->writeln("Project {$projectDir} created from {$boilerplateDir}");
 
         $this->replaceFileVars($projectDir . DIRECTORY_SEPARATOR . 'composer.json', [
-            '$projectNamespace' => "CycleORM\\\\Benchmarks\\\\" . ucfirst($project) . '\\\\',
+            '$projectNamespace' => 'CycleORM\\\\Benchmarks\\\\' . ucfirst($project) . '\\\\',
             '$project' => $project,
-            '$benchmarksNamespace' => "Benchmarks\\\\",
-            '$require' => json_encode($require, JSON_UNESCAPED_SLASHES)
+            '$benchmarksNamespace' => 'Benchmarks\\\\',
+            '$require' => json_encode($require, JSON_UNESCAPED_SLASHES),
         ]);
 
         return $projectDir;

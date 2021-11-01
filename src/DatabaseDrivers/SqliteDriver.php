@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
@@ -33,7 +34,7 @@ abstract class SqliteDriver extends AbstractDriver
             'username' => 'sqlite',
             'password' => '',
             'options' => [],
-            'queryCache' => true
+            'queryCache' => true,
         ]);
 
         $this->dbal = new DatabaseManager(
@@ -97,7 +98,6 @@ abstract class SqliteDriver extends AbstractDriver
         return $this;
     }
 
-
     public function makeFK(string $from, string $fromKey, string $to, string $toColumn, string $onDelete = ForeignKeyInterface::CASCADE, string $onUpdate = ForeignKeyInterface::CASCADE): self
     {
         $schema = $this->database->table($from)->getSchema();
@@ -120,7 +120,7 @@ abstract class SqliteDriver extends AbstractDriver
     public function createEntityFactory(): EntityFactoryInterface
     {
         return $this->container->make(EntityFactoryInterface::class, [
-            'orm' => $this->orm
+            'orm' => $this->orm,
         ]);
     }
 }

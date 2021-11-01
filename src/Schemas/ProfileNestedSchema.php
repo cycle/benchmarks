@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Schemas;
@@ -17,7 +18,7 @@ class ProfileNestedSchema implements SchemaInterface
         Schema::PRIMARY_KEY => 'id',
         Schema::COLUMNS => ['id', 'profile_id', 'label'],
         Schema::TYPECAST => [
-            'id' => 'int'
+            'id' => 'int',
         ],
         Schema::SCHEMA => [],
         Schema::RELATIONS => [],
@@ -45,7 +46,7 @@ class ProfileNestedSchema implements SchemaInterface
     public function toArray(): array
     {
         return [
-            $this->key => $this->schema
+            $this->key => $this->schema,
         ];
     }
 

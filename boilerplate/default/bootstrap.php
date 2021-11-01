@@ -1,6 +1,8 @@
 <?php
 
-require __DIR__ . "/vendor/autoload.php";
-require __DIR__ . "/../../vendor/autoload.php";
+declare(strict_types=1);
 
-define('ROOT', __DIR__ . "/../..");
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
+
+define('ROOT', __DIR__ . '/../..');

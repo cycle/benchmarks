@@ -1,9 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Benchmarks;
 
-use Butschster\EntityFaker\Seeds\Seeds;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
 use Cycle\Benchmarks\Base\Schemas\SchemaFactory;
 use Cycle\Benchmarks\Base\Schemas\UserProfileSchema;
@@ -25,7 +25,7 @@ abstract class HasOneSelect extends DatabaseBenchmark
                 [
                     ['user1', 'user1@site.com'],
                     ['user2', 'user2@site.com'],
-                    ['user3', 'user3@site.com']
+                    ['user3', 'user3@site.com'],
                 ]
             )
             ->insertTableRows(
@@ -34,7 +34,7 @@ abstract class HasOneSelect extends DatabaseBenchmark
                 [
                     ['John Smith', 1],
                     ['Matthew Perry', 2],
-                    ['Matthew LeBlanc', 3]
+                    ['Matthew LeBlanc', 3],
                 ]
             );
     }
