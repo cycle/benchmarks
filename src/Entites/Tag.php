@@ -3,23 +3,19 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Entites;
 
-use Cycle\ORM\Collection\Pivoted\PivotedCollection;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 class Tag
 {
     public $id;
     public $name;
-    public Collection $users;
+    public iterable $users;
 
-    public function __construct()
+    public function __construct(iterable $users = [])
     {
-        $this->users = new ArrayCollection();
+        $this->users = $users;
     }
 
     public function addUser(User $user)
     {
-        $this->users->add($user);
+        $this->users[] = $user;
     }
 }

@@ -3,28 +3,24 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\Entites;
 
-use Cycle\ORM\Collection\Pivoted\PivotedCollection;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 class User
 {
     public $id;
     public string $username;
     public string $email;
     public $profile = null;
-    public Collection $comments;
-    public Collection $tags;
+    public iterable $comments;
+    public iterable $tags;
 
-    public function __construct()
+    public function __construct(iterable $comments = [], iterable $tags = [])
     {
-        $this->comments = new ArrayCollection();
-        $this->tags = new ArrayCollection();
+        $this->comments = $comments;
+        $this->tags = $tags;
     }
 
     public function addTag(Tag $tag)
     {
-        $this->tags->add($tag);
+        $this->tags[] = $tag;
         $tag->addUser($this);
     }
 

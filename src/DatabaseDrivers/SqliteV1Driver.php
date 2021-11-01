@@ -4,21 +4,20 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
 
 use Butschster\EntityFaker\EntityFactoryInterface;
-use Cycle\ORM\Collection\CollectionFactoryInterface;
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\Factory;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
 use Cycle\ORM\Schema;
 use Spiral\Core\Container;
-use Cycle\Database\Config\DatabaseConfig;
-use Cycle\Database\Database;
-use Cycle\Database\DatabaseInterface;
-use Cycle\Database\DatabaseManager;
-use Cycle\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
-use Cycle\Database\ForeignKeyInterface;
+use Spiral\Database\Config\DatabaseConfig;
+use Spiral\Database\Database;
+use Spiral\Database\DatabaseInterface;
+use Spiral\Database\DatabaseManager;
+use Spiral\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
+use Spiral\Database\ForeignKeyInterface;
 
-abstract class SqliteDriver extends AbstractDriver
+class SqliteV1Driver extends AbstractDriver
 {
     private DatabaseManager $dbal;
     private ORMInterface $orm;
@@ -33,7 +32,7 @@ abstract class SqliteDriver extends AbstractDriver
             'username' => 'sqlite',
             'password' => '',
             'options' => [],
-            'queryCache' => true
+            'queryCache' => false
         ]);
 
         $this->dbal = new DatabaseManager(
@@ -44,12 +43,10 @@ abstract class SqliteDriver extends AbstractDriver
         $this->orm = $this->createOrm();
     }
 
-    abstract protected function getCollectionFactory(): CollectionFactoryInterface;
-
     private function createOrm(): ORMInterface
     {
         return new \Cycle\ORM\ORM(
-            new Factory($this->dbal, RelationConfig::getDefault(), null, $this->getCollectionFactory()),
+            new Factory($this->dbal, RelationConfig::getDefault()),
             new Schema([])
         );
     }

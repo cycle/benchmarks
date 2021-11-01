@@ -45,7 +45,7 @@ abstract class ManyToManyPersist extends DatabaseBenchmark
 
         foreach ($this->tagSeeds->take($params['times']) as $seed) {
             $tagEntity = new Tag();
-            $user->tags->add($entityFactory->hydrate($tagEntity, $seed));
+            $user->tags[] = $entityFactory->hydrate($tagEntity, $seed);
         }
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());
@@ -64,9 +64,9 @@ abstract class ManyToManyPersist extends DatabaseBenchmark
     {
         $entityFactory = $this->getEntityFactory();
 
-        $tags = new ArrayCollection();
+        $tags = [];
         foreach ($this->tagSeeds->take($params['times']) as $tagData) {
-            $tags->add($entityFactory->hydrate(new Tag(), $tagData));
+            $tags[] = $entityFactory->hydrate(new Tag(), $tagData);
         }
 
         $this->runCallbacks($entityFactory->beforeCreationCallbacks());

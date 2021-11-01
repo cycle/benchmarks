@@ -2,5 +2,7 @@
 !.gitignore
 !v1
 !v2refhyd
-!v2
+!v2array
+!v2doctrine
+!v2illuminate
 !v2promise

@@ -40,7 +40,7 @@ final class TableRenderer
      *
      * @throws SchemaException
      */
-    public function renderColumns(AbstractTable $table, array $columns, array $defaults): void
+    public function renderColumns($table, array $columns, array $defaults): void
     {
         $primaryKeys = [];
         foreach ($columns as $name => $definition) {
@@ -92,7 +92,7 @@ final class TableRenderer
      * @throws SchemaException
      * @see  AbstractColumn
      */
-    protected function renderColumn(AbstractColumn $column, array $type, bool $hasDefault, $default = null): void
+    protected function renderColumn($column, array $type, bool $hasDefault, $default = null): void
     {
         // ORM force EVERY column to NOT NULL state unless different is said
         $column->nullable(false);
@@ -188,7 +188,7 @@ final class TableRenderer
      *
      * @return mixed
      */
-    protected function castDefault(AbstractColumn $column)
+    protected function castDefault($column)
     {
         if (in_array($column->getAbstractType(), ['timestamp', 'datetime', 'time', 'date'])) {
             return 0;
