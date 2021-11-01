@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
 
 use Faker\Generator;
-use Spiral\Database\Driver\Driver;
-use Spiral\Database\Driver\SQLite\SQLiteCompiler;
-use Spiral\Database\Exception\StatementException;
-use Spiral\Database\Query\QueryBuilder;
-use Spiral\Database\StatementInterface;
+use Cycle\Database\Driver\Driver;
+use Cycle\Database\Driver\SQLite\SQLiteCompiler;
+use Cycle\Database\Exception\StatementException;
+use Cycle\Database\Query\QueryBuilder;
+use Cycle\Database\StatementInterface;
 use Throwable;
 
 class NullDriver extends Driver

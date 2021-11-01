@@ -4,18 +4,19 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
 
 use Butschster\EntityFaker\EntityFactoryInterface;
+use Cycle\ORM\Collection\DoctrineCollectionFactory;
 use Cycle\ORM\Config\RelationConfig;
 use Cycle\ORM\Factory;
 use Cycle\ORM\ORMInterface;
 use Cycle\ORM\RepositoryInterface;
 use Cycle\ORM\Schema;
 use Spiral\Core\Container;
-use Spiral\Database\Config\DatabaseConfig;
-use Spiral\Database\Database;
-use Spiral\Database\DatabaseInterface;
-use Spiral\Database\DatabaseManager;
-use Spiral\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
-use Spiral\Database\ForeignKeyInterface;
+use Cycle\Database\Config\DatabaseConfig;
+use Cycle\Database\Database;
+use Cycle\Database\DatabaseInterface;
+use Cycle\Database\DatabaseManager;
+use Cycle\Database\Driver\SQLite\SQLiteDriver as DatabaseDriver;
+use Cycle\Database\ForeignKeyInterface;
 
 class SqliteDriver extends AbstractDriver
 {
@@ -45,7 +46,10 @@ class SqliteDriver extends AbstractDriver
 
     private function createOrm(): ORMInterface
     {
-        return new \Cycle\ORM\ORM(new Factory($this->dbal, RelationConfig::getDefault()));
+        $factory = \class_exists(DoctrineCollectionFactory::class)
+            ? new Factory($this->dbal, RelationConfig::getDefault(), null, new DoctrineCollectionFactory())
+            : new Factory($this->dbal, RelationConfig::getDefault());
+        return new \Cycle\ORM\ORM($factory, new Schema([]));
     }
 
     public function configure(): void

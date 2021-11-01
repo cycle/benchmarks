@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
 
-use Spiral\Database\Driver\Handler;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractTable;
+use Cycle\Database\Driver\Handler;
+use Cycle\Database\Schema\AbstractColumn;
+use Cycle\Database\Schema\AbstractTable;
 
 class NullDriverHandler extends Handler
 {
