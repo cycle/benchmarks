@@ -16,7 +16,7 @@ class ProfileNestedSchema implements SchemaInterface
         Schema::DATABASE => 'default',
         Schema::TABLE => 'nested',
         Schema::PRIMARY_KEY => 'id',
-        Schema::COLUMNS => ['id', 'nested', 'label'],
+        Schema::COLUMNS => ['id', 'profile_id', 'label'],
         Schema::TYPECAST => [
             'id' => 'int',
         ],

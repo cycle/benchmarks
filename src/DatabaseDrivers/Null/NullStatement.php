@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Cycle\Benchmarks\Base\DatabaseDrivers\Null;
 
-use Spiral\Database\StatementInterface;
+use Cycle\Database\StatementInterface;
 
 class NullStatement implements StatementInterface
 {

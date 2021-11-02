@@ -1,7 +1,8 @@
 {
     "name": "cycle/benchmarks-$project",
     "description": "Cycle ORM benchmarks",
-    "minimum-stability": "stable",
+    "minimum-stability" : "dev",
+    "prefer-stable" : true,
     "license": "MIT",
     "authors": [
         {

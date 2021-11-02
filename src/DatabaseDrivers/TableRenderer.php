@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Cycle\Benchmarks\Base\DatabaseDrivers;
 
 use Cycle\ORM\Exception\SchemaException;
-use Spiral\Database\Schema\AbstractColumn;
-use Spiral\Database\Schema\AbstractTable;
+use Cycle\Database\Schema\AbstractColumn;
+use Cycle\Database\Schema\AbstractTable;
 
 /**
  * Implements the ability to define column in AbstractSchema based on string representation and
@@ -40,7 +40,7 @@ final class TableRenderer
      *
      * @throws SchemaException
      */
-    public function renderColumns(AbstractTable $table, array $columns, array $defaults): void
+    public function renderColumns($table, array $columns, array $defaults): void
     {
         $primaryKeys = [];
         foreach ($columns as $name => $definition) {
@@ -93,7 +93,7 @@ final class TableRenderer
      *
      * @see  AbstractColumn
      */
-    protected function renderColumn(AbstractColumn $column, array $type, bool $hasDefault, $default = null): void
+    protected function renderColumn($column, array $type, bool $hasDefault, $default = null): void
     {
         // ORM force EVERY column to NOT NULL state unless different is said
         $column->nullable(false);
@@ -191,7 +191,7 @@ final class TableRenderer
      *
      * @return mixed
      */
-    protected function castDefault(AbstractColumn $column)
+    protected function castDefault($column)
     {
         if (in_array($column->getAbstractType(), ['timestamp', 'datetime', 'time', 'date'])) {
             return 0;

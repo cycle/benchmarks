@@ -7,11 +7,11 @@ namespace Cycle\Benchmarks\Base\Benchmarks;
 use Butschster\EntityFaker\Seeds\Seeds;
 use Cycle\Benchmarks\Base\Configurators\UserConfigurator;
 use Cycle\Benchmarks\Base\Entites\Comment;
+use Cycle\Benchmarks\Base\Entites\User;
 use Cycle\Benchmarks\Base\Schemas\CommentSchema;
 use Cycle\Benchmarks\Base\Schemas\SchemaFactory;
 use Cycle\Benchmarks\Base\Schemas\UserProfileSchema;
 use Cycle\Benchmarks\Base\Schemas\UserSchema;
-use Cycle\ORM\Tests\Mapper\ProxyEntityMapper\Hydrator\User;
 
 /**
  * @method UserConfigurator getConfigurator()

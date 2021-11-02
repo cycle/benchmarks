@@ -36,6 +36,7 @@ class GenerateReportCommand extends Command
             '--report' => 'cycle',
         ];
 
+
         $container = PhpBench::loadContainer(
             new ArrayInput($args)
         );
@@ -60,14 +61,13 @@ class GenerateReportCommand extends Command
 
             try {
                 $reportId = $container->get(UuidResolver::class)->resolve($id);
+                $collection->mergeCollection(
+                    $xml->fetch($reportId)
+                );
             } catch (\Throwable $e) {
                 $output->writeln("<error>Report id {$id} for project {$projectName} not found</error>");
-                return Command::INVALID;
+                continue;
             }
-
-            $collection->mergeCollection(
-                $xml->fetch($reportId)
-            );
         }
 
         $reports->renderReports($collection, ['grouped', /*'chart'*/], ['console']);

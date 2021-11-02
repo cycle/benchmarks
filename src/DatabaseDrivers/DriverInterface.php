@@ -6,7 +6,7 @@ namespace Cycle\Benchmarks\Base\DatabaseDrivers;
 
 use Butschster\EntityFaker\EntityFactoryInterface;
 use Cycle\ORM\RepositoryInterface;
-use Spiral\Database\ForeignKeyInterface;
+use Cycle\Database\ForeignKeyInterface;
 
 interface DriverInterface
 {

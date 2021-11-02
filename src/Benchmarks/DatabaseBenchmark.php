@@ -9,7 +9,6 @@ use Butschster\EntityFaker\Factory;
 use Butschster\EntityFaker\Seeds\SeedRepositoryInterface;
 use Cycle\Benchmarks\Base\Configurators\ConfiguratorInterface;
 use Cycle\ORM\MapperInterface;
-use Cycle\ORM\Select\JoinableLoader;
 use Generator;
 
 abstract class DatabaseBenchmark extends Benchmark
@@ -53,7 +52,11 @@ abstract class DatabaseBenchmark extends Benchmark
 
     public function joinableLoader(): Generator
     {
-        yield 'postload' => ['method' => JoinableLoader::POSTLOAD]; // By default
+        if (!class_exists('Cycle\ORM\Select\JoinableLoader')) {
+            return;
+        }
+
+        yield 'postload' => ['method' => \Cycle\ORM\Select\JoinableLoader::POSTLOAD]; // By default
 //        yield 'inload' => ['method' => JoinableLoader::INLOAD];
 //        yield 'join' => ['method' => JoinableLoader::JOIN];
 //        yield 'left_join' => ['method' => JoinableLoader::LEFT_JOIN];
